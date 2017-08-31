@@ -65,7 +65,7 @@ export const ScriptCache = (function(global) {
 
           // Pick off callback, if there is one
           if (src.match(/callback=CALLBACK_NAME/)) {
-            src = src.replace(/(callback=)[^\&]+/, `$1${cbName}`)
+            src = src.replace(/(callback=)[^&]+/, `$1${cbName}`)
             cb = window[cbName] = tag.onload;
           } else {
             tag.addEventListener('load', tag.onload)

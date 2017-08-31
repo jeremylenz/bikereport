@@ -5,13 +5,14 @@ import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import NewLocationForm from './components/NewLocationForm.js'
+import MainPage from './components/MainPage'
 
 
 const App = () => {
   return (
     <Router>
       <div>
-        <Route exact path='/' component={NewLocationForm} />
+        <Route exact path='/' component={MainPage} />
       </div>
     </Router>
 

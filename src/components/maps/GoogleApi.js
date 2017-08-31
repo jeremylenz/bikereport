@@ -35,7 +35,7 @@ export const GoogleApi = function(opts) {
 
     return `${url}?${paramStr}`;
   }
-
+  console.log(url());
   return url();
 }
 
