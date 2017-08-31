@@ -32,9 +32,11 @@ class MapContainer extends React.Component {
       lng: props.mapCenter.lng},
       children: [this.newMarker(props.mapCenter.lat, props.mapCenter.lng)]
     })
+    
   }
 
   mapClicked = (mapProps, map, clickEvent) => {
+
     this.setState({
       children: [this.newMarker(clickEvent.latLng.lat(), clickEvent.latLng.lng())],
       mapCenter: {lat: clickEvent.latLng.lat(),
@@ -58,8 +60,8 @@ class MapContainer extends React.Component {
 
 
       const style = {
-        width: '70%',
-        height: '50%'
+        width: '90%',
+        height: '90%'
       }
 
 

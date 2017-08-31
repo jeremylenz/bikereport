@@ -4,7 +4,7 @@ import NewLocationForm from './NewLocationForm'
 class MainPage extends React.Component {
   render () {
     return (
-      <div>Main page
+      <div>
       <NewLocationForm /></div>
     )
   }

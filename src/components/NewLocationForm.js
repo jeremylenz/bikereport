@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button } from 'semantic-ui-react'
+import { Form, Button, Icon, Container, Input } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
 import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 import config from '../config.js'
@@ -18,7 +18,8 @@ class NewLocationForm extends React.Component {
           lat: 40.705503,
           lng: -74.013423
         },
-      currentAddy: ''
+      currentAddy: '',
+      loadingCurrentLocation: false
     }
   }
 
@@ -41,13 +42,14 @@ class NewLocationForm extends React.Component {
   }
 
   getCurrentLocation = () => {
+    this.setState({loadingCurrentLocation: true})
     navigator.geolocation.getCurrentPosition((pos) => {
-            console.log(pos)
                 this.setState({
                   mapCenter: {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude
-                  }
+                  },
+                  loadingCurrentLocation: false
                 })})
   }
 
@@ -67,23 +69,38 @@ class NewLocationForm extends React.Component {
 
 
 
+
   render () {
     return (
       <div className="put-it-in-a-div">
-        <Button onClick={this.getCurrentLocation}>Current Location</Button>
-        <div>
-          <MapContainer
-            mapCenter={this.state.mapCenter}
-            />
-        </div>
-        <div>
-        <Form onSubmit={this.onSubmit}>
-          <Form.Field>
-            <input placeholder='Enter location..' value={this.state.text} onChange={this.handleChange} />
-          </Form.Field>
-          <Button type='submit'>Go</Button>
-        </Form>
-      </div>
+        <Container>
+
+          {this.state.loadingCurrentLocation && (
+          <Button loading size='large' />
+          )}
+
+          {!this.state.loadingCurrentLocation && (
+          <Button onClick={this.getCurrentLocation}>
+            <Icon name='location arrow' />
+          </Button>
+          )}
+
+          <div>
+            <MapContainer
+              mapCenter={this.state.mapCenter}
+              />
+          </div>
+
+          <div>
+            <Form onSubmit={this.onSubmit}>
+              <Form.Field>
+                <Input placeholder='Enter location..' value={this.state.text} onChange={this.handleChange} />
+              </Form.Field>
+              <Button type='submit'>Go</Button>
+            </Form>
+          </div>
+          <Button>Save Location</Button>
+        </Container>
       </div>
     )
   }
