@@ -1,19 +1,22 @@
 import React from 'react'
-// import { Carsd, Icon, Image } from 'semantic-ui-react'
-// import MapContainer from './MapContainer.js'
+// import { Card, Icon, Image } from 'semantic-ui-react'
+import MapContainer from './MapContainer.js'
 // import config from '../config.js'
-import Mapbox from './Mapbox'
+// import Mapbox from './Mapbox'
 
 
 
 class NewLocationForm extends React.Component {
+
+  componentDidMount () {
+  }
 
 
 
   render () {
     return (
         <div>
-          <Mapbox />
+          <MapContainer />
         </div>
     )
   }

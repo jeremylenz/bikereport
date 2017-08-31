@@ -38,6 +38,7 @@ export const wrapper = (options) => (WrappedComponent) => {
         })
 
         this.map = new maps.Map(node, mapConfig);
+        console.log('GoogleApiComponent: ', window.google)
 
         this.setState({
           loaded: true,
@@ -54,6 +55,7 @@ export const wrapper = (options) => (WrappedComponent) => {
           libraries: libraries
         })
       });
+      console.log('loaded cache')
     }
 
     render() {

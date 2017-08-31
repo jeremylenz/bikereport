@@ -23,6 +23,6 @@
   to { transform: rotate(360deg); }
 }
 
-#mapbox {
-  height: 100vh;
+#mapbox-jl {
+  height: 100%;
 }

@@ -7,11 +7,19 @@ export default class Map extends React.Component {
     this.loadMap();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.google !== this.props.google) {
+      console.log('Map didUpdate: ', this.props.google)
+      this.loadMap();
+    }
+  }
+
   loadMap() {
     if (this.props && this.props.google) {
       // google is available
       const {google} = this.props;
       const maps = google.maps;
+      console.log('loading map ', maps)
 
       const mapRef = this.refs.map;
       const node = ReactDOM.findDOMNode(mapRef);
@@ -24,7 +32,7 @@ export default class Map extends React.Component {
         center: center,
         zoom: zoom
       })
-      this.map = new maps.Map(node, mapConfig);
+      this.map = new maps.Map(node, mapConfig)
     }
   }
 

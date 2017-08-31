@@ -6,6 +6,9 @@ import GoogleApiComponent from './maps/GoogleApiComponent'
 
 export class MapContainer extends React.Component {
 
+  componentDidMount() {
+  }
+
   render() {
 
 
@@ -17,16 +20,17 @@ export class MapContainer extends React.Component {
 
 
       return (
-        <Map google={this.props.google}
-          zoom={17}
-          style={style}
-          initialCenter={{
-              lat: 40.7047078,
-              lng: -74.0174336
-            }}
-          >
+        <div style={style}>
+          <Map google={this.props.google}
+            zoom={17}
+            initialCenter={{
+                lat: 40.7047078,
+                lng: -74.0174336
+              }}
+            >
 
-        </Map>
+          </Map>
+        </div>
       );
     }
 

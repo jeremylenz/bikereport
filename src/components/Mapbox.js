@@ -8,7 +8,7 @@ class Mapbox extends React.Component {
   componentDidMount() {
     mapboxgl.accessToken = config.MAPBOX_TOKEN;
     var map = new mapboxgl.Map({
-    container: 'mapbox',
+    container: 'mapbox-jl',
     style: 'mapbox://styles/mapbox/streets-v10',
     center: [-74.016259, 40.7052529], // starting position
     zoom: 15 // starting zoom
