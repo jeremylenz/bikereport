@@ -8,16 +8,14 @@ import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 
 class MapContainer extends React.Component {
 
-  constructor() {
+  constructor(props) {
 
 
-    super()
+    super(props)
     this.state = {
       children: [],
-      mapCenter: {
-          lat: 40.705503,
-          lng: -74.013423
-        }
+      mapCenter: props.mapCenter
+      // {lat: 37.705503, lng: -74.013423}
     }
   }
 
@@ -26,23 +24,34 @@ class MapContainer extends React.Component {
   componentDidMount() {
   }
 
+
+
   componentWillReceiveProps(props) {
-    this.setState({
-      mapCenter: {lat: props.mapCenter.lat,
-      lng: props.mapCenter.lng},
-      children: [this.newMarker(props.mapCenter.lat, props.mapCenter.lng)]
-    })
+
+    if((props.mapCenter.lat !== this.props.mapCenter.lat) || (props.mapCenter.lng !== this.props.mapCenter.lng)){
+
+      this.setState({
+        children: [this.newMarker(props.mapCenter.lat, props.mapCenter.lng)],
+        mapCenter: props.mapCenter
+      })
+    }
+
 
   }
 
   mapClicked = (mapProps, map, clickEvent) => {
-
+    let newMapCenter = {lat: clickEvent.latLng.lat(),
+    lng: clickEvent.latLng.lng()}
     this.setState({
       children: [this.newMarker(clickEvent.latLng.lat(), clickEvent.latLng.lng())],
-      mapCenter: {lat: clickEvent.latLng.lat(),
-      lng: clickEvent.latLng.lng()}
-    })
+      mapCenter: newMapCenter
+    }, () => this.props.updateMarker(this.state.mapCenter))
+    // () => this.props.updateMarker(this.state.mapCenter)
+
+
   }
+
+
 
   newMarker = (lat,long) => {
     return (
@@ -55,6 +64,12 @@ class MapContainer extends React.Component {
           }} />
     )
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    // console.log('didUpdate ', this.state.mapCenter)
+  }
+
+
 
   render() {
 

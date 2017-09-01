@@ -1,12 +1,11 @@
 import React from 'react'
-import { Form, Button, Icon, Input, Grid, Segment } from 'semantic-ui-react'
+import { Form, Button, Icon, Input, Grid, Segment, Modal, Header, Dropdown } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
 import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 import config from '../config.js'
 // import Mapbox from './Mapbox'
 
-
-
+const OUR_API_URL = config.OUR_API_URL
 
 class NewLocationForm extends React.Component {
 
@@ -14,17 +13,39 @@ class NewLocationForm extends React.Component {
     super ()
     this.state = {
       text: '',
-      mapCenter: {
-          lat: 40.705503,
-          lng: -74.013423
-        },
+      mapCenter: {lat: 40.705503, lng: -74.013423},
+      currentMarker: {lat: 40.705503, lng: -74.013423},
       currentAddy: '',
-      loadingCurrentLocation: false
+      loadingCurrentLocation: false,
+      modalOpen: false,
+      locationNameInput: '',
+      bikePathInput: 'None',
+      bikePathOptions: [],
+      bikePathsLoaded: false,
+      bikePaths: []
     }
   }
 
 
   componentDidMount () {
+    fetch(`${config.OUR_API_URL}/bike_paths`)
+    .then(resp => resp.json())
+    .then((resp) => this.loadBikePaths(resp))
+  }
+
+
+
+  loadBikePaths = (resp) => {
+    let bikePathOptions = resp.map((bikePath) => {
+      return {key: bikePath.id,
+              value: bikePath.name,
+              text: bikePath.name}
+    })
+    this.setState({
+      bikePathsLoaded: true,
+      bikePathOptions: bikePathOptions,
+      bikePaths: resp
+    })
   }
 
   onSubmit = () => {
@@ -35,10 +56,25 @@ class NewLocationForm extends React.Component {
     this.findAddress(GEO_CODE_URL)
   }
 
+
+
   handleChange = (event) => {
     this.setState({
       text: event.target.value
     })
+  }
+
+  handleFormChange = (event) => {
+    this.setState({
+      locationNameInput: event.target.value
+    })
+  }
+
+  handleFormChangeBikePath = (event) => {
+    // console.log(event.target.children[0].innerText)
+    // this.setState({
+    //   bikePathInput: event.target.children[0].innerText
+    // })
   }
 
   getCurrentLocation = () => {
@@ -63,9 +99,54 @@ class NewLocationForm extends React.Component {
     console.log(results.results[0].formatted_address)
     let location = results.results[0].geometry.location
     this.setState({
-      mapCenter: location
+      mapCenter: location,
+      currentMarker: location
     })
   }
+
+  handleOpen = () => this.setState({ modalOpen: true})
+
+  handleClose = () => this.setState({ modalOpen: false })
+
+  saveLocation = (event) => {
+    console.log(this.state.currentMarker)
+    let newLocationName = this.state.locationNameInput
+    let bikePathName = event.target.parentElement.children[1].children[1].innerText
+    let bikePathId = this.state.bikePaths.find((bikePath) => {return bikePath.name === bikePathName}).id
+
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json')
+    myHeaders.append('Accept', 'application/json')
+
+    let myBody =
+    {"location": {
+                  "name": newLocationName,
+                  "lat": this.state.currentMarker.lat,
+                  "long": this.state.currentMarker.lng
+                  },
+      "bike_path": {
+                  "id": bikePathId
+                  }
+    }
+
+    fetch(`${OUR_API_URL}/locations`,
+      {method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(myBody)
+    })
+    .then(resp => resp.json())
+    .then(resp => console.log(resp))
+  }
+
+  updateMarker = (mapCenter) => {
+    this.setState({
+      currentMarker: mapCenter
+    })
+    console.log(mapCenter)
+  }
+
+
+
 
 
 
@@ -78,6 +159,7 @@ class NewLocationForm extends React.Component {
             <div className='google-map-js'>
               <MapContainer
                 mapCenter={this.state.mapCenter}
+                updateMarker={this.updateMarker}
                 />
             </div>
 
@@ -107,10 +189,42 @@ class NewLocationForm extends React.Component {
                 <Icon name='location arrow' />
               </Button>
               )}
-            <Button floated='right'>Save Location</Button>
+
+
+              <Modal
+              trigger={<Button floated='right' onClick={this.handleOpen} disabled={!this.state.bikePathsLoaded}>Save Location</Button>}
+              open={this.state.modalOpen}
+              onClose={this.handleClose}
+              dimmer='inverted'
+              basic
+              size='small'
+              closeIcon='close'
+            >
+              <Header icon='crosshairs' content='Save Location' />
+              <Modal.Content>
+                <Form>
+                  <Form.Field>
+                    <label>Location name: </label>
+                    <input placeholder='Describe the location' value={this.locationNameInput} onChange={this.handleFormChange}/>
+                  </Form.Field>
+                  <Dropdown placeholder='On a bike lane or path?'
+                    fluid search selection
+                    options={this.state.bikePathOptions}
+                    />
+                  <Button type='submit' onClick={this.saveLocation}>Save</Button>
+                </Form>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button onClick={this.handleClose} color='red' inverted>
+                  <Icon name='remove'/> Cancel
+                </Button>
+              </Modal.Actions>
+            </Modal>
+
           </Segment>
 
         </Segment.Group>
+
 
       </div>
     )
