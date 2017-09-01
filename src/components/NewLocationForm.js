@@ -22,7 +22,8 @@ class NewLocationForm extends React.Component {
       bikePathInput: 'None',
       bikePathOptions: [],
       bikePathsLoaded: false,
-      bikePaths: []
+      bikePaths: [],
+      saveStatus: 'waiting'
     }
   }
 
@@ -106,9 +107,12 @@ class NewLocationForm extends React.Component {
 
   handleOpen = () => this.setState({ modalOpen: true})
 
-  handleClose = () => this.setState({ modalOpen: false })
+  handleClose = () => this.setState({ modalOpen: false, saveStatus: 'waiting' })
 
   saveLocation = (event) => {
+    this.setState({
+      saveStatus: 'saving'
+    })
     console.log(this.state.currentMarker)
     let newLocationName = this.state.locationNameInput
     let bikePathName = event.target.parentElement.children[1].children[1].innerText
@@ -135,7 +139,9 @@ class NewLocationForm extends React.Component {
       body: JSON.stringify(myBody)
     })
     .then(resp => resp.json())
-    .then(resp => console.log(resp))
+    .then(this.setState({
+      saveStatus: 'saved'
+    }))
   }
 
   updateMarker = (mapCenter) => {
@@ -171,7 +177,7 @@ class NewLocationForm extends React.Component {
 
               <Form onSubmit={this.onSubmit}>
                 <Form.Field>
-                  <Input action='Go' placeholder='Enter location..' value={this.state.text} onChange={this.handleChange} />
+                  <Input action='Go' placeholder='Enter address (optional)..' value={this.state.text} onChange={this.handleChange} />
 
 
                 </Form.Field>
@@ -181,7 +187,7 @@ class NewLocationForm extends React.Component {
               <Segment>
 
               {this.state.loadingCurrentLocation && (
-              <Button loading size='big' floated='right' />
+              <Button loading size='huge' floated='right' />
               )}
 
               {!this.state.loadingCurrentLocation && (
@@ -211,13 +217,31 @@ class NewLocationForm extends React.Component {
                     fluid search selection
                     options={this.state.bikePathOptions}
                     />
+                  {this.state.saveStatus === 'waiting' &&
                   <Button type='submit' onClick={this.saveLocation}>Save</Button>
+                  }
+                  {this.state.saveStatus === 'saving' &&
+                  <Button type='submit' loading primary>Saving...</Button>
+                  }
+                  {this.state.saveStatus === 'saved' &&
+                  <Button type='submit' color='green' disabled>
+                    <Icon name='checkmark'/>Saved!</Button>
+                  }
+
                 </Form>
               </Modal.Content>
               <Modal.Actions>
+                {this.state.saveStatus === 'waiting' &&
                 <Button onClick={this.handleClose} color='red' inverted>
                   <Icon name='remove'/> Cancel
                 </Button>
+                }
+                {this.state.saveStatus === 'saved' &&
+                <Button onClick={this.handleClose} color='green' inverted>
+                  <Icon name='checkmark'/> Done
+                </Button>
+                }
+
               </Modal.Actions>
             </Modal>
 

@@ -13,7 +13,7 @@ class MapContainer extends React.Component {
 
     super(props)
     this.state = {
-      children: [],
+      children: [this.newMarker(props.mapCenter.lat, props.mapCenter.lng)],
       mapCenter: props.mapCenter
       // {lat: 37.705503, lng: -74.013423}
     }
