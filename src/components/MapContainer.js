@@ -32,7 +32,7 @@ class MapContainer extends React.Component {
       lng: props.mapCenter.lng},
       children: [this.newMarker(props.mapCenter.lat, props.mapCenter.lng)]
     })
-    
+
   }
 
   mapClicked = (mapProps, map, clickEvent) => {
@@ -60,8 +60,8 @@ class MapContainer extends React.Component {
 
 
       const style = {
-        width: '90%',
-        height: '90%'
+        width: '100%',
+        height: '100vh'
       }
 
 

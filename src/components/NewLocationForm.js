@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Icon, Container, Input } from 'semantic-ui-react'
+import { Form, Button, Icon, Input, Grid, Segment } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
 import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 import config from '../config.js'
@@ -73,34 +73,45 @@ class NewLocationForm extends React.Component {
   render () {
     return (
       <div className="put-it-in-a-div">
-        <Container>
 
-          {this.state.loadingCurrentLocation && (
-          <Button loading size='large' />
-          )}
 
-          {!this.state.loadingCurrentLocation && (
-          <Button onClick={this.getCurrentLocation}>
-            <Icon name='location arrow' />
-          </Button>
-          )}
+            <div className='google-map-js'>
+              <MapContainer
+                mapCenter={this.state.mapCenter}
+                />
+            </div>
 
-          <div>
-            <MapContainer
-              mapCenter={this.state.mapCenter}
-              />
-          </div>
 
-          <div>
-            <Form onSubmit={this.onSubmit}>
-              <Form.Field>
-                <Input placeholder='Enter location..' value={this.state.text} onChange={this.handleChange} />
-              </Form.Field>
-              <Button type='submit'>Go</Button>
-            </Form>
-          </div>
-          <Button>Save Location</Button>
-        </Container>
+
+
+            <Segment.Group horizontal>
+              <Segment>
+
+              <Form onSubmit={this.onSubmit}>
+                <Form.Field>
+                  <Input action='Go' placeholder='Enter location..' value={this.state.text} onChange={this.handleChange} />
+
+
+                </Form.Field>
+              </Form>
+            </Segment>
+
+              <Segment>
+
+              {this.state.loadingCurrentLocation && (
+              <Button loading size='big' floated='right' />
+              )}
+
+              {!this.state.loadingCurrentLocation && (
+              <Button onClick={this.getCurrentLocation} floated='right'>
+                <Icon name='location arrow' />
+              </Button>
+              )}
+            <Button floated='right'>Save Location</Button>
+          </Segment>
+
+        </Segment.Group>
+
       </div>
     )
   }
