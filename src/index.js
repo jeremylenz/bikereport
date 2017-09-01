@@ -12,6 +12,7 @@ const App = () => {
   return (
     <Router>
       <div>
+        <Route exact path='/newlocation' component={NewLocationForm} />
         <Route exact path='/' component={MainPage} />
       </div>
     </Router>
