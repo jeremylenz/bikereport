@@ -1,7 +1,7 @@
 import React from 'react'
-import { Form, Button, Icon, Input, Grid, Segment, Modal, Header, Dropdown } from 'semantic-ui-react'
+import { Form, Button, Icon, Input, Segment, Modal, Header, Dropdown } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
-import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
+// import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 import config from '../config.js'
 // import Mapbox from './Mapbox'
 

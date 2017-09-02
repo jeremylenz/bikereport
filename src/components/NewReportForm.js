@@ -34,13 +34,15 @@ class NewReportForm extends React.Component {
     this.state = {
       bikePathsLoaded: false,
       locationsLoaded: false,
+      details: '',
       bikePaths: [],
       locations: [],
       bikePathOptions: [],
       locationOptions: [],
       typeOptions: typeOptions,
       selectedBikePathId: 1,
-      saveStatus: 'waiting'
+      saveStatus: 'waiting',
+      formStatus: 'hidden'
 
     }
   }
@@ -91,10 +93,9 @@ class NewReportForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-
-    let reportType = event.target.parentElement.children[3].children[0].innerText
-    let bikePath = event.target.parentElement.children[5].children[1].innerText
-    let location = event.target.parentElement.children[6].children[2].innerText
+    let reportType = event.target.parentElement.parentElement.children[3].children[0].innerText
+    let bikePath = event.target.parentElement.parentElement.children[5].children[1].innerText
+    let location = event.target.parentElement.parentElement.children[6].children[2].innerText
     let details = this.state.details
     let bikePathId = this.state.bikePaths.find((bp) => {return bp.name === bikePath}).id
     let locationId = this.state.locations.find((loc) => {return loc.name === location}).id
@@ -137,9 +138,10 @@ class NewReportForm extends React.Component {
     .then(resp => resp.json())
     .then((resp) => {
       console.log(resp)
+      this.props.loadNewReport(resp)
       this.setState({
         saveStatus: 'saved'
-      })
+      }, this.resetForm)
     })
 
     }
@@ -182,14 +184,42 @@ class NewReportForm extends React.Component {
     })
   }
 
+  showForm = () => {
+    this.setState({
+      formStatus: 'showing'
+    })
+  }
+
+  resetForm = () => {
+    setTimeout(
+    () => {this.setState({
+      formStatus: 'hidden',
+      saveStatus: 'waiting',
+      details: ''
+    })}, 1000)
+  }
+
+  cancelForm = () => {
+    this.setState({
+      formStatus: 'hidden',
+      saveStatus: 'waiting',
+      details: ''
+    })
+  }
+
 
 
 
 render () {
   return (
-    <div className="put-it-in-a-div">
-      <Grid centered columns={2}>
+
         <Grid.Column>
+          {this.state.formStatus === 'hidden' &&
+          <Button basic fluid size='huge' color='green' onClick={this.showForm}>
+            <Icon name='bicycle' size='big' />Submit a Report</Button>
+          }
+
+          {this.state.formStatus === 'showing' &&
           <Form>
             <Header as='h2'>New Report</Header>
             <Header as='h3'>What are you reporting?</Header>
@@ -212,25 +242,36 @@ render () {
             <TextArea autoHeight placeholder='Give us the deets' rows={2} value={this.state.details} onChange={this.handleTextAreaChange}/>
             <Divider />
             {this.state.saveStatus === 'waiting' &&
-            <Button type='submit' onClick={this.handleSubmit}>Submit</Button>
+            <Button.Group>
+            <Button type='submit' basic color='green' onClick={this.handleSubmit}>Submit</Button>
+            <Button onClick={this.cancelForm} basic color='red'>Cancel</Button>
+            </Button.Group>
+
             }
             {this.state.saveStatus === 'saving' &&
-              <Button type='submit' disabled>Saving...</Button>
+              <Button.Group>
+              <Button type='submit' basic color='green' disabled >Saving...</Button>
+              <Button disabled basic color='red'>...</Button>
+              </Button.Group>
             }
             {this.state.saveStatus === 'saved' &&
-              <Button type='submit' color='green' disabled>
-                <Icon name='checkmark' />Saved!</Button>
+              <Button.Group>
+              <Button type='submit' basic color='green' disabled >Saved!</Button>
+              <Button disabled basic color='green'>
+                <Icon name='checkmark' color='green' />
+              </Button>
+              </Button.Group>
+
             }
 
 
 
           </Form>
+        }
+
+
         </Grid.Column>
-      </Grid>
 
-
-
-    </div>
   )
 }
 
