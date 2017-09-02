@@ -1,6 +1,6 @@
 import React from 'react'
 import config from '../config.js'
-import { Form, Grid, Dropdown, Header, TextArea, Divider, Button, Link } from 'semantic-ui-react'
+import { Form, Grid, Dropdown, Header, TextArea, Divider, Button, Icon } from 'semantic-ui-react'
 
 const OUR_API_URL = config.OUR_API_URL
 
@@ -38,7 +38,9 @@ class NewReportForm extends React.Component {
       locations: [],
       bikePathOptions: [],
       locationOptions: [],
-      typeOptions: typeOptions
+      typeOptions: typeOptions,
+      selectedBikePathId: 1,
+      saveStatus: 'waiting'
 
     }
   }
@@ -67,6 +69,8 @@ class NewReportForm extends React.Component {
     })
   }
 
+
+
   loadLocations = (resp) => {
     let locationOptions = resp.map((location) => {
       return {key: location.id,
@@ -80,11 +84,17 @@ class NewReportForm extends React.Component {
     })
   }
 
+  findBikePathId(bikePathName) {
+    return this.state.bikePaths.find((bikePath) => {
+      return bikePath.name === bikePathName
+    }).id
+  }
+
   handleSubmit = (event) => {
 
     let reportType = event.target.parentElement.children[3].children[0].innerText
-    let bikePath = event.target.parentElement.children[6].children[0].innerText
-    let location = event.target.parentElement.children[9].children[0].innerText
+    let bikePath = event.target.parentElement.children[5].children[1].innerText
+    let location = event.target.parentElement.children[6].children[2].innerText
     let details = this.state.details
     let bikePathId = this.state.bikePaths.find((bp) => {return bp.name === bikePath}).id
     let locationId = this.state.locations.find((loc) => {return loc.name === location}).id
@@ -95,6 +105,9 @@ class NewReportForm extends React.Component {
   }
 
   saveReport = (reportType, details, bikePathId, locationId, userId) => {
+    this.setState({
+      saveStatus: 'saving'
+    })
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json')
     myHeaders.append('Accept', 'application/json')
@@ -122,9 +135,45 @@ class NewReportForm extends React.Component {
       body: JSON.stringify(myBody)
     })
     .then(resp => resp.json())
-    .then(resp => console.log(resp))
+    .then((resp) => {
+      console.log(resp)
+      this.setState({
+        saveStatus: 'saved'
+      })
+    })
 
     }
+
+  handleBikePathDDChange = (event) => {
+    let bikePath = event.target.innerText
+    if(bikePath === "Bike path: "){
+      bikePath = "None"
+    }
+    let bikePathId;
+    // if you click outside the dropdown, text will be all of the options, and will thus have a newline character.   In this case, we want to leave the selected bike path unchanged.
+    if(/\n/.test(bikePath)){
+      bikePathId = this.state.selectedBikePathId
+    } else {
+      bikePathId = this.findBikePathId(bikePath)
+    }
+    let newLocations = this.state.locations.filter((location) => {
+      return location.bike_path_id === bikePathId
+    })
+
+    let locationOptions = newLocations.map((location) => {
+      return {key: location.id,
+              value: location.name,
+              text: location.name}
+    })
+
+    this.setState({
+      locationsLoaded: true,
+      locationOptions: locationOptions,
+      selectedBikePathId: bikePathId
+    })
+
+
+  }
 
 
   handleTextAreaChange = (event) => {
@@ -146,19 +195,34 @@ render () {
             <Header as='h3'>What are you reporting?</Header>
 
             <label htmlFor='type'>Report type:</label>
-            <Form.Dropdown placeholder='Report type:' id='type' options={this.state.typeOptions} onChange={this.handleTypeDDChange}/>
+            <Form.Dropdown placeholder='Report type:' id='type' options={this.state.typeOptions} />
 
             <Header as='h3'>Where did you see it?</Header>
-            <label htmlFor='bikepath'>Bike path:</label>
-            <Form.Dropdown placeholder='Bike path: ' id='bikepath' options={this.state.bikePathOptions} />
-            <label htmlFor='location'>Location:</label>
-            <a href='/newlocation' style={{float: 'right'}}>New location</a>
-            <Form.Dropdown placeholder='Location: ' id='location' options={this.state.locationOptions} />
+            <Form.Field inline>
+              <label htmlFor='bikepath'>Bike path:</label>
+              <Dropdown placeholder='Bike path: ' id='bikepath' options={this.state.bikePathOptions} onChange={this.handleBikePathDDChange} />
+            </Form.Field>
+            <Form.Field inline>
+              <label htmlFor='location'>Location:</label>
+              <a href='/newlocation' style={{float: 'right'}}>New location</a>
+              <Dropdown placeholder='Location: ' id='location' options={this.state.locationOptions} />
+            </Form.Field>
 
             <Header as='h3'>Details</Header>
             <TextArea autoHeight placeholder='Give us the deets' rows={2} value={this.state.details} onChange={this.handleTextAreaChange}/>
             <Divider />
+            {this.state.saveStatus === 'waiting' &&
             <Button type='submit' onClick={this.handleSubmit}>Submit</Button>
+            }
+            {this.state.saveStatus === 'saving' &&
+              <Button type='submit' disabled>Saving...</Button>
+            }
+            {this.state.saveStatus === 'saved' &&
+              <Button type='submit' color='green' disabled>
+                <Icon name='checkmark' />Saved!</Button>
+            }
+
+
 
           </Form>
         </Grid.Column>
