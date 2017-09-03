@@ -47,6 +47,7 @@ class Report extends React.Component {
   }
 
   render () {
+
     let thisReport = this.props.reportData
     let googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.props.location.lat},${this.props.location.long}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${config.GOOGLE_MAPS_API_KEY}`
 

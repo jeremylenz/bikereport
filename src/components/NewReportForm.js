@@ -50,12 +50,19 @@ class NewReportForm extends React.Component {
 
 
   componentDidMount() {
-    fetch(`${config.OUR_API_URL}/bike_paths`)
-    .then(resp => resp.json())
-    .then((resp) => this.loadBikePaths(resp))
-    .then(() => fetch(`${config.OUR_API_URL}/locations`))
-    .then((resp) => resp.json())
-    .then((resp) => this.loadLocations(resp))
+
+    let promise1 = fetch(`${config.OUR_API_URL}/bike_paths`)
+    .then(resp => resp.json());
+    let promise2 = fetch(`${config.OUR_API_URL}/locations`)
+    .then((resp) => resp.json());
+
+    let fetches = [promise1, promise2]
+
+    Promise.all(fetches)
+    .then((resp) => {this.loadBikePaths(resp[0])
+                    this.loadLocations(resp[1])})
+
+
   }
 
   loadBikePaths = (resp) => {
@@ -90,6 +97,42 @@ class NewReportForm extends React.Component {
     return this.state.bikePaths.find((bikePath) => {
       return bikePath.name === bikePathName
     }).id
+  }
+
+  findOrCreate = (bikePathName) => {
+    let result = this.state.bikePaths.find((bikePath) => {
+      return bikePath.name === bikePathName
+    })
+    if(typeof result === 'undefined') {
+      this.createNewBikePath(bikePathName)
+    } else {
+      console.log(result)
+      return result
+    }
+  }
+
+  createNewBikePath = (bikePathName) => {
+    console.log('creating new bikePath...')
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json')
+    myHeaders.append('Accept', 'application/json')
+
+    let myBody =
+    {"bike_path": {
+                  "name": bikePathName
+                  }
+    }
+
+    fetch(`${OUR_API_URL}/bike_paths`,
+      {method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(myBody)
+    })
+    .then(resp => resp.json())
+    .then((resp) => {console.log(resp);
+      this.setState({bikePaths: [resp, ...this.state.bikePaths],
+      selectedBikePathId: resp.id})
+    })
   }
 
   handleSubmit = (event) => {
@@ -147,6 +190,7 @@ class NewReportForm extends React.Component {
     }
 
   handleBikePathDDChange = (event) => {
+    // This function filters the locations dropdown to only those on the selected bike path
     let bikePath = event.target.innerText
     if(bikePath === "Bike path: "){
       bikePath = "None"
@@ -191,12 +235,8 @@ class NewReportForm extends React.Component {
   }
 
   resetForm = () => {
-    setTimeout(
-    () => {this.setState({
-      formStatus: 'hidden',
-      saveStatus: 'waiting',
-      details: ''
-    })}, 1000)
+    // Allow the user, for 1000 milliseconds, to bask in the joy of having successfully saved
+    setTimeout(this.cancelForm, 1000)
   }
 
   cancelForm = () => {
