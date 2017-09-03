@@ -6,6 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import NewLocationForm from './components/NewLocationForm.js'
 import MainPage from './components/MainPage'
+import LoginPage from './components/LoginPage'
 
 
 const App = () => {
@@ -13,7 +14,8 @@ const App = () => {
     <Router>
       <div>
         <Route exact path='/newlocation' component={NewLocationForm} />
-        <Route exact path='/' component={MainPage} />
+        <Route exact path='/main' component={MainPage} />
+        <Route exact path='/' component={LoginPage} />
       </div>
     </Router>
 

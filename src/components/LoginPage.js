@@ -1,9 +1,16 @@
 import React from 'react'
+import LoginBox from './LoginBox'
+import { Grid } from 'semantic-ui-react'
 
 class LoginPage extends React.Component {
   render () {
     return (
-      <div>Login Page</div>
+      <div className="put-it-in-a-div">
+        <Grid centered columns={2}>
+          <LoginBox />
+
+        </Grid>
+      </div>
     )
   }
 

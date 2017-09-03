@@ -4,6 +4,7 @@ import MapContainer from './MapContainer.js'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 import config from '../config.js'
 // import Mapbox from './Mapbox'
+import { Redirect } from 'react-router-dom'
 
 const OUR_API_URL = config.OUR_API_URL
 
@@ -23,7 +24,8 @@ class NewLocationForm extends React.Component {
       bikePathOptions: [],
       bikePathsLoaded: false,
       bikePaths: [],
-      saveStatus: 'waiting'
+      saveStatus: 'waiting',
+      goBack: false
     }
   }
 
@@ -151,6 +153,12 @@ class NewLocationForm extends React.Component {
     console.log(mapCenter)
   }
 
+  goBack = () => {
+    this.setState({
+      goBack: true
+    })
+  }
+
 
 
 
@@ -158,6 +166,13 @@ class NewLocationForm extends React.Component {
 
 
   render () {
+
+    if(this.state.goBack === true) {
+      return (
+        <Redirect to={'/main'} />
+      )
+    }
+
     return (
       <div className="put-it-in-a-div">
 
@@ -185,6 +200,7 @@ class NewLocationForm extends React.Component {
             </Segment>
 
               <Segment>
+                <Button floated='left' basic icon='arrow left' color='green' onClick={this.goBack}/>
 
               {this.state.loadingCurrentLocation && (
               <Button loading size='huge' floated='right' />

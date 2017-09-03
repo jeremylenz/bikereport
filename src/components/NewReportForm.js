@@ -136,9 +136,9 @@ class NewReportForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    let reportType = event.target.parentElement.parentElement.children[3].children[0].innerText
-    let bikePath = event.target.parentElement.parentElement.children[5].children[1].innerText
-    let location = event.target.parentElement.parentElement.children[6].children[2].innerText
+    let reportType = event.target.parentElement.parentElement.children[4].children[0].innerText
+    let bikePath = event.target.parentElement.parentElement.children[6].children[1].innerText
+    let location = event.target.parentElement.parentElement.children[7].children[2].innerText
     let details = this.state.details
     let bikePathId = this.state.bikePaths.find((bp) => {return bp.name === bikePath}).id
     let locationId = this.state.locations.find((loc) => {return loc.name === location}).id
@@ -255,12 +255,16 @@ render () {
 
         <Grid.Column>
           {this.state.formStatus === 'hidden' &&
-          <Button basic fluid size='huge' color='green' onClick={this.showForm}>
-            <Icon name='bicycle' size='big' />Submit a Report</Button>
+          <div>
+            <Divider />
+            <Button basic fluid size='huge' color='green' onClick={this.showForm}>
+              <Icon name='bicycle' size='big' />Submit a Report
+            </Button>
+          </div>
           }
-
           {this.state.formStatus === 'showing' &&
           <Form>
+            <Divider />
             <Header as='h2'>New Report</Header>
             <Header as='h3'>What are you reporting?</Header>
 
