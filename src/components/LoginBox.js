@@ -37,7 +37,6 @@ class LoginBox extends React.Component {
           fluid
           color='facebook'
           size='huge'
-          disabled
           >
           <Icon name='facebook' /> Facebook
         </Button>
@@ -46,7 +45,6 @@ class LoginBox extends React.Component {
           fluid
           color='twitter'
           size='huge'
-          disabled
           >
           <Icon name='twitter' /> Twitter
         </Button>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Button, Icon, Input, Segment, Modal, Header, Dropdown } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
+import NavBar from './NavBar'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 import config from '../config.js'
 // import Mapbox from './Mapbox'
@@ -176,7 +177,7 @@ class NewLocationForm extends React.Component {
     return (
       <div className="put-it-in-a-div">
 
-
+            <NavBar />
             <div className='google-map-js'>
               <MapContainer
                 mapCenter={this.state.mapCenter}

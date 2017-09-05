@@ -2,7 +2,7 @@ import React from 'react'
 import config from '../config'
 import Report from './Report'
 import NewReportForm from './NewReportForm'
-import { Feed, Button } from 'semantic-ui-react'
+import { Feed, Button, Grid } from 'semantic-ui-react'
 
 const OUR_API_URL = config.OUR_API_URL
 
@@ -59,24 +59,28 @@ class ReportsContainer extends React.Component {
 
     return (
       <div className='put-it-in-a-div'>
-        <NewReportForm loadNewReport={this.loadNewReport} />
-        <Feed size='large'>
-          {this.state.reports.map((report) => {
-            let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id }).name
-            let username = this.state.users.find((user) => {return user.id === report.user_id}).username
-            let location = this.state.locations.find((loc) => {return loc.id === report.location_id})
-            return <Report
-              reportData={report}
-              key={report.id}
-              bikePath={bikePath}
-              username={username}
-              location={location}/>
-          })}
-      </Feed>
-      {this.state.allReportsLoaded === false &&
-      <Button fluid size='big' primary>Load More</Button>
+        <Grid.Column textAlign='left' >
+          <NewReportForm loadNewReport={this.loadNewReport} />
+          <Feed size='large'>
+            {this.state.reports.map((report) => {
+              let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id }).name
+              let username = this.state.users.find((user) => {return user.id === report.user_id}).username
+              let location = this.state.locations.find((loc) => {return loc.id === report.location_id})
+              return <Report
+                reportData={report}
+                key={report.id}
+                bikePath={bikePath}
+                username={username}
+                location={location}
+                />
+            })}
+        </Feed>
+        {this.state.allReportsLoaded === false &&
+        <Button fluid size='big' primary>Load More</Button>
 
-      }
+        }
+        </Grid.Column>
+
       </div>
     )
   }

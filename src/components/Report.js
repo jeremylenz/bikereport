@@ -52,17 +52,17 @@ class Report extends React.Component {
     let googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.props.location.lat},${this.props.location.long}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${config.GOOGLE_MAPS_API_KEY}`
 
     return (
-      <div className='put-it-in-a-div'>
+      <div className='put-it-in-a-div report'>
         <Divider />
         <Feed.Event>
           <Feed.Content>
             <Feed.Summary>
+              <Feed.Extra images id='report-mini-map'><a><img src={googleMapImgUrl} height='100' width='100' alt='google map'/></a></Feed.Extra>
               <Feed.Date>{thisReport.updated_at}</Feed.Date>
               <Feed.User>{this.props.username}</Feed.User> reported <strong>{thisReport.report_type}</strong>
             </Feed.Summary>
             <Feed.Extra text>On bike path: {this.props.bikePath}</Feed.Extra>
             <Feed.Extra text>Location: {this.props.location.name}</Feed.Extra>
-            <Feed.Extra images><a><img src={googleMapImgUrl} height='100' width='100' alt='google map'/></a></Feed.Extra>
 
             <Feed.Extra text>{thisReport.details}</Feed.Extra>
             <Feed.Meta>
