@@ -29,7 +29,7 @@ class LoginBox extends React.Component {
     }
 
     return (
-      <Grid.Column >
+      <Grid.Column className='login-box'>
         <Header as='h2'>Welcome to BikeWays</Header>
         <Header as='h4'>Log in with...</Header>
         <Divider />

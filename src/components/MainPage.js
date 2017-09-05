@@ -10,8 +10,9 @@ class MainPage extends React.Component {
       <div className="put-it-in-a-div">
         <NavBar />
         <Grid centered columns={2}>
-          <ReportsContainer />
-
+          <Grid.Column textAlign='left' >
+            <ReportsContainer />
+          </Grid.Column>
         </Grid>
       </div>
     )

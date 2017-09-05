@@ -2,7 +2,7 @@ import React from 'react'
 import config from '../config'
 import Report from './Report'
 import NewReportForm from './NewReportForm'
-import { Feed, Button, Grid } from 'semantic-ui-react'
+import { Feed, Button } from 'semantic-ui-react'
 
 const OUR_API_URL = config.OUR_API_URL
 
@@ -59,7 +59,6 @@ class ReportsContainer extends React.Component {
 
     return (
       <div className='put-it-in-a-div'>
-        <Grid.Column textAlign='left' >
           <NewReportForm loadNewReport={this.loadNewReport} />
           <Feed size='large'>
             {this.state.reports.map((report) => {
@@ -79,7 +78,6 @@ class ReportsContainer extends React.Component {
         <Button fluid size='big' primary>Load More</Button>
 
         }
-        </Grid.Column>
 
       </div>
     )
