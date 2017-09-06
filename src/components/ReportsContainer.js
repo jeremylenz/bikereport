@@ -16,7 +16,8 @@ class ReportsContainer extends React.Component {
       allReportsLoaded: true,
       bikePaths: [],
       users: [],
-      locations: []
+      locations: [],
+      loggedIn: localStorage.getItem('guest') === "false"
     }
   }
 
@@ -34,7 +35,8 @@ class ReportsContainer extends React.Component {
       reports: resp[0],
       bikePaths: resp[1],
       users: resp[2],
-      locations: resp[3]
+      locations: resp[3],
+      reportsLoaded: true
     }))
 
   }
@@ -59,7 +61,9 @@ class ReportsContainer extends React.Component {
 
     return (
       <div className='put-it-in-a-div'>
+          {this.state.loggedIn &&
           <NewReportForm loadNewReport={this.loadNewReport} />
+          }
           <Feed size='large'>
             {this.state.reports.map((report) => {
               let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id }).name

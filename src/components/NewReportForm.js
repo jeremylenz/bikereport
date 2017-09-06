@@ -155,6 +155,7 @@ class NewReportForm extends React.Component {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json')
     myHeaders.append('Accept', 'application/json')
+    myHeaders.append('Authorization', 'Bearer ' + localStorage.getItem('jwt'))
 
     let myBody =
     {"report": {
