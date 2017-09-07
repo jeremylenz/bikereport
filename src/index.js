@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import NewLocationForm from './components/NewLocationForm.js'
 import MainPage from './components/MainPage'
 import LoginPage from './components/LoginPage'
+import TwitterCallback from './components/TwitterCallback'
 
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
         <Route exact path='/newlocation' component={NewLocationForm} />
         <Route exact path='/main' component={MainPage} />
         <Route exact path='/' component={LoginPage} />
+        <Route path='/twitter/:token/:verifier' component={TwitterCallback} />
       </div>
     </Router>
 
