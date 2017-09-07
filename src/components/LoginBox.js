@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Grid, Header, Divider, Icon } from 'semantic-ui-react'
 import config from '../config.js'
+import TwitterCallback from './TwitterCallback'
 // import config from '../config'
 import { Redirect } from 'react-router-dom'
 
@@ -14,8 +15,14 @@ class LoginBox extends React.Component {
       redirect: false,
       loading: false,
       twitterButtonEnabled: false,
-      facebookButtonEnabled: false
+      facebookButtonEnabled: false,
+      twitterButtonStatus: 'initial state',
+      twitterButtonHref: ''
     }
+  }
+
+  componentDidMount () {
+    this.requestRequestToken()
   }
 
   processGuestLogin = () => {
@@ -29,6 +36,8 @@ class LoginBox extends React.Component {
   }
 
   getGuestJWT = () => {
+    localStorage.setItem('guest', 'true')
+    localStorage.setItem('name', 'Guest')
     this.setState({
       loading: true
     })
@@ -59,6 +68,41 @@ class LoginBox extends React.Component {
     console.log('set JWT!')
   }
 
+  requestRequestToken = () => {
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json')
+    myHeaders.append('Accept', 'application/json')
+    // myHeaders.append('Authorization', 'Bearer ' + localStorage.getItem('jwt'))
+
+    let myBody =
+    {"oauth": {
+                  "oauth_callback": "http://localhost:3000/api/v1/twitter",
+                  "http_method": "post",
+                  "url": "https://api.twitter.com/oauth/request_token"
+                  }
+    }
+
+    fetch(`${OUR_API_URL}/oauth`,
+      {method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(myBody)
+    })
+    .then(resp => resp.json())
+    .then(resp => this.loadRequestToken(resp))
+  }
+
+  loadRequestToken = (resp) => {
+    console.log(resp)
+    let oauth_token = resp.oauth_token
+    let oauth_token_secret = resp.oauth_token_secret
+
+    this.setState({
+      twitterButtonEnabled: true,
+      twitterButtonHref: `https://api.twitter.com/oauth/authenticate?oauth_token=${oauth_token}`
+    })
+
+  }
+
   render () {
 
     if(this.state.redirect) {
@@ -72,45 +116,26 @@ class LoginBox extends React.Component {
         <Header as='h2'>Welcome to BikeWays</Header>
         <Header as='h4'>Log in with...</Header>
         <Divider />
-        {this.state.facebookButtonEnabled &&
+
         <Button
+          disabled={!this.state.facebookButtonEnabled}
           fluid
           color='facebook'
           size='huge'
           >
           <Icon name='facebook' /> Facebook
         </Button>
-        }
-        {!this.state.facebookButtonEnabled &&
-        <Button
-          disabled
-          fluid
-          color='facebook'
-          size='huge'
-          >
-          <Icon name='facebook' /> Facebook
-        </Button>
-        }
+
         <Divider />
-        {this.state.twitterButtonEnabled &&
-        <Button
+
+        <a href={this.state.twitterButtonHref}><Button
+          disabled={!this.state.twitterButtonEnabled}
           fluid
           color='twitter'
           size='huge'
           >
           <Icon name='twitter' /> Twitter
-        </Button>
-        }
-        {!this.state.twitterButtonEnabled &&
-        <Button
-          disabled
-          fluid
-          color='twitter'
-          size='huge'
-          >
-          <Icon name='twitter' /> Twitter
-        </Button>
-        }
+        </Button></a>
 
         <Divider />
         {this.state.loading === false &&
@@ -128,7 +153,7 @@ class LoginBox extends React.Component {
         {this.state.loading &&
         <Button
           fluid
-          loading
+          loading={this.state.loading}
           color='green'
           size='huge'
           basic

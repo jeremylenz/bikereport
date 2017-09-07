@@ -2,6 +2,24 @@ import React from 'react'
 import { Header, Icon, Menu, Dropdown } from 'semantic-ui-react'
 
 class NavBar extends React.Component {
+
+  constructor () {
+    super ()
+    this.state = {
+      name: 'Guest'
+    }
+  }
+
+  componentDidMount() {
+    let name = localStorage.getItem('name')
+    let guest = localStorage.getItem('guest')
+    if((guest === 'false') && (name != 'Guest')) {
+      this.setState({
+        name: name
+      })
+    }
+  }
+
   render () {
     return (
       <div className='Xnavbar-container' >
@@ -17,9 +35,14 @@ class NavBar extends React.Component {
 
         <div className='header-menu-container'>
           <Menu size='large' color='blue' inverted compact>
-            <Dropdown item text='Hello, Guest'>
+            <Dropdown item text={"Hello, " + this.state.name}>
               <Dropdown.Menu>
+                {this.state.name === 'Guest' &&
                 <Dropdown.Item as='a' href='/'>Log In</Dropdown.Item>
+                }
+                {this.state.name != 'Guest' &&
+                <Dropdown.Item as='a' href='/'>Log Out</Dropdown.Item>
+                }
               </Dropdown.Menu>
             </Dropdown>
           </Menu>

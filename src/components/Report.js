@@ -44,7 +44,7 @@ class Report extends React.Component {
     }
 
     fetch(`${OUR_API_URL}/reports/${this.props.reportData.id}`,
-      {method: 'PUT',
+      {method: 'PATCH',
       headers: myHeaders,
       body: JSON.stringify(myBody)
     })

@@ -1,4 +1,6 @@
 import React from 'react'
+import config from '../config.js'
+import { Redirect } from 'react-router-dom'
 
 // 1. User clicks login with Twitter
 // - Assemble Oauth headers
@@ -17,23 +19,109 @@ import React from 'react'
 // 11. We save the JWT token to local storage
 // 12. User is now logged in and can create new reports/locations
 
+const OUR_API_URL = config.OUR_API_URL
+
 class TwitterCallback extends React.Component {
 
   constructor () {
     super ()
     this.state = {
-      oauthStatus: 'initial state',  // ['initial state', 'request token requested', 'request token received', 'user redirected to twitter', 'twitter redirected the user here', 'access token requested', 'access token received', 'jwt token requested', 'jwt token received', 'process complete']
-      details: []
+      done: false,
+       // ['initial state', 'request  requested', 'request token received', 'user redirected to twitter', 'twitter redirected the user here', 'access token requested', 'access token received', 'jwt token requested', 'jwt token received', 'process complete']
     }
   }
 
   componentDidMount () {
     this.setState({
-      oauthStatus: 'twitter redirected the user here'
+      oauthStatus: 'i dunno'
+    })
+    console.log(this.props)
+    this.getAccessToken(this.props.match.params.token, this.props.match.params.verifier)
+  }
+
+  getAccessToken = (token, verifier) => {
+
+      this.setState({
+        loading: true
+      })
+
+      let myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'application/json')
+      myHeaders.append('Accept', 'application/json')
+      // myHeaders.append('Authorization', 'Bearer ' + localStorage.getItem('jwt'))
+
+      let myBody =
+      {"oauth": {
+                    "http_method": "post",
+                    "url": "https://api.twitter.com/oauth/access_token",
+                    "oauth_token": `${token}`,
+		                "oauth_verifier": `${verifier}`
+                    }
+      }
+
+      fetch(`${OUR_API_URL}/oauth`,
+        {method: 'POST',
+        headers: myHeaders,
+        body: JSON.stringify(myBody)
+      })
+      .then(resp => resp.json())
+      .then(resp => this.issueTwitterJwt(resp))
+
+  }
+
+  issueTwitterJwt = (resp) => {
+
+    let screenName = resp.screen_name
+    let userId = resp.user_id
+    let oauthToken = resp.oauth_token
+    let oauthTokenSecret = resp.oauth_token_secret
+      this.setState({
+        loading: true
+      })
+
+      let myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'application/json')
+      myHeaders.append('Accept', 'application/json')
+
+      let myBody =
+      {"user":
+              {"screen_name": screenName,
+              "oauth_token": oauthToken,
+              "oauth_token_secret": oauthTokenSecret}
+      }
+      console.log('getting Twitter JWT')
+
+      return fetch(`${OUR_API_URL}/login`,
+        {method: 'POST',
+        headers: myHeaders,
+        body: JSON.stringify(myBody)
+        })
+      .then(resp => resp.json())
+      .then(resp => this.setTwitterJWT(resp, screenName))
+
+
+
+
+  }
+
+  setTwitterJWT (resp, screenName) {
+    localStorage.setItem('jwt', resp.jwt)
+    localStorage.setItem('guest', false)
+    localStorage.setItem('name', screenName)
+    console.log('set JWT!')
+    this.setState({
+      done: true
     })
   }
 
+
   render () {
+
+    if(this.state.done) {
+      return (<Redirect to={'/main'} />)
+    } else {
+      return (<div> Logging in with Twitter...</div>)
+    }
 
   }
 }
