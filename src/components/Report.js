@@ -1,5 +1,5 @@
 import React from 'react'
-import { Divider, Feed, Button } from 'semantic-ui-react'
+import { Divider, Feed, Button, Image } from 'semantic-ui-react'
 import config from '../config.js'
 import moment from 'moment'
 
@@ -80,6 +80,12 @@ class Report extends React.Component {
             <Feed.Extra text>Location: {this.props.location.name}</Feed.Extra>
 
             <Feed.Extra text>{thisReport.details}</Feed.Extra>
+            {typeof this.props.image !== 'undefined' &&
+            <Feed.Extra images className='report-pic'>
+              <Divider />
+              <a target='_blank' href={this.props.image.image_url}><Image src={this.props.image.image_url} size='medium' alt='report'/></a>
+            </Feed.Extra>
+            }
             <Feed.Meta>
               <Feed.Like>
                 <Button

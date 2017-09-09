@@ -4,6 +4,7 @@ import Report from './Report'
 import NewReportForm from './NewReportForm'
 import { Feed, Button } from 'semantic-ui-react'
 
+
 const OUR_API_URL = config.OUR_API_URL
 
 class ReportsContainer extends React.Component {
@@ -17,13 +18,14 @@ class ReportsContainer extends React.Component {
       bikePaths: [],
       users: [],
       locations: [],
+      images: [],
       loggedIn: localStorage.getItem('guest') === "false"
     }
   }
 
   componentDidMount() {
 
-    let stuffToFetch = ['reports','bike_paths','users','locations']
+    let stuffToFetch = ['reports','bike_paths','users','locations', 'images']
 
     let myPromises = stuffToFetch.map((thing) => {
       return fetch(`${OUR_API_URL}/${thing}`)
@@ -36,6 +38,7 @@ class ReportsContainer extends React.Component {
       bikePaths: resp[1],
       users: resp[2],
       locations: resp[3],
+      images: resp[4],
       reportsLoaded: true
     }))
 
@@ -64,17 +67,20 @@ class ReportsContainer extends React.Component {
           {this.state.loggedIn &&
           <NewReportForm loadNewReport={this.loadNewReport} />
           }
+
           <Feed size='large'>
             {this.state.reports.map((report) => {
               let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id }).name
               let username = this.state.users.find((user) => {return user.id === report.user_id}).username
               let location = this.state.locations.find((loc) => {return loc.id === report.location_id})
+              let image = this.state.images.find((img) => {return img.report_id === report.id})
               return <Report
                 reportData={report}
                 key={report.id}
                 bikePath={bikePath}
                 username={username}
                 location={location}
+                image={image}
                 />
             })}
         </Feed>
