@@ -95,7 +95,7 @@ class ReportsContainer extends React.Component {
     return (
       <div className='put-it-in-a-div reports-container'>
           {this.state.loggedIn &&
-          <NewReportForm loadNewReport={this.loadNewReport} />
+          <NewReportForm loadNewReport={this.loadNewReport} locationId={this.props.locationId} reportType={this.props.reportType} />
           }
 
           <Feed size='large'>

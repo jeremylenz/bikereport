@@ -83,7 +83,7 @@ class Report extends React.Component {
             {typeof this.props.image !== 'undefined' &&
             <Feed.Extra images className='report-pic'>
               <Divider />
-              <a target='_blank' href={this.props.image.image_url}><Image src={this.props.image.image_url} size='medium' alt='report'/></a>
+              <a target='_blank' href={this.props.image.image_url}><Image src={this.props.image.image_url} size='large' alt='report'/></a>
             </Feed.Extra>
             }
             <Feed.Meta>
