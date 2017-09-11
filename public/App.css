@@ -37,6 +37,7 @@
   border-style: solid;
   border-width: 1px;
   border-color: gray;
+  margin-bottom: 12px;
 }
 
 .navbar {
@@ -73,6 +74,7 @@
 .report-pic {
   clear: both;
   padding-bottom: 12px;
+  image-orientation: from-image;
 }
 
 .ui.horizontal.segments {
