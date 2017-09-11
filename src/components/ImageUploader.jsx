@@ -1,5 +1,6 @@
 import React from 'react'
 import config from '../config'
+import { Image } from 'semantic-ui-react'
 
 const OUR_API_URL = config.OUR_API_URL
 
@@ -56,9 +57,9 @@ class ImageUploader extends React.Component {
    let {imagePreviewUrl} = this.state;
    let $imagePreview = null;
    if (imagePreviewUrl) {
-     $imagePreview = (<img src={imagePreviewUrl} alt='uploaded preview' />);
+     $imagePreview = (<Image src={imagePreviewUrl} size='medium' alt='uploaded preview' />);
    } else {
-     $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+     $imagePreview = (<div className="previewText"></div>);
    }
 
    return (

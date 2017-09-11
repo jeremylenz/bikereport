@@ -1,6 +1,7 @@
 import React from 'react'
 import config from '../config.js'
 import { Redirect } from 'react-router-dom'
+import { Dimmer, Loader } from 'semantic-ui-react'
 
 // 1. User clicks login with Twitter
 // - Assemble Oauth headers
@@ -120,7 +121,9 @@ class TwitterCallback extends React.Component {
     if(this.state.done) {
       return (<Redirect to={'/main'} />)
     } else {
-      return (<div> Logging in with Twitter...</div>)
+      return ( <Dimmer active inverted>
+        <Loader size='large'>Logging in with Twitter...</Loader>
+      </Dimmer>)
     }
 
   }

@@ -19,7 +19,8 @@ class ReportsContainer extends React.Component {
       users: [],
       locations: [],
       images: [],
-      loggedIn: localStorage.getItem('guest') === "false"
+      loggedIn: localStorage.getItem('guest') === "false",
+      admin: false
     }
   }
 
@@ -51,10 +52,39 @@ class ReportsContainer extends React.Component {
     })
   }
 
-  loadNewReport = (resp) => {
+  loadNewReport = (report, image) => {
+    let newImages;
+    if(image == null) {
+      newImages = this.state.images
+    } else {
+      newImages = [image, ...this.state.images]
+    }
+    console.log(newImages, this)
     this.setState({
-      reports: [resp, ...this.state.reports]
+      reports: [report, ...this.state.reports],
+      images: newImages
     })
+  }
+
+  deleteReport = (id) => {
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json')
+    myHeaders.append('Accept', 'application/json')
+    myHeaders.append('Authorization', 'Bearer ' + localStorage.getItem('jwt'))
+
+
+    let myBody = {}
+
+    fetch(`${OUR_API_URL}/reports/${id}`,
+      {method: 'DELETE',
+      headers: myHeaders,
+      body: JSON.stringify(myBody)
+    })
+    .then(resp => resp.json())
+    .then(resp => console.log(resp))
+    .then(this.setState({
+      reports: this.state.reports.filter((rep) => {return rep.id !== id})
+    }))
   }
 
   render () {
@@ -63,7 +93,7 @@ class ReportsContainer extends React.Component {
 
 
     return (
-      <div className='put-it-in-a-div'>
+      <div className='put-it-in-a-div reports-container'>
           {this.state.loggedIn &&
           <NewReportForm loadNewReport={this.loadNewReport} />
           }
@@ -81,6 +111,8 @@ class ReportsContainer extends React.Component {
                 username={username}
                 location={location}
                 image={image}
+                admin={this.state.admin}
+                deleteReport={this.deleteReport}
                 />
             })}
         </Feed>

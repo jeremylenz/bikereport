@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Icon, Input, Segment, Modal, Header, Dropdown } from 'semantic-ui-react'
+import { Form, Button, Icon, Input, Segment, Modal, Header, Dropdown, Label } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
 import NavBar from './NavBar'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
@@ -83,14 +83,17 @@ class NewLocationForm extends React.Component {
 
   getCurrentLocation = () => {
     this.setState({loadingCurrentLocation: true})
+    // navigator.geolocation.getCurrentPosition(getCoor, errorCoor, {maximumAge:60000, timeout:5000, enableHighAccuracy:true});
+
     navigator.geolocation.getCurrentPosition((pos) => {
+      alert(parseInt(pos.coords.latitude))
                 this.setState({
                   mapCenter: {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude
                   },
                   loadingCurrentLocation: false
-                })})
+                })}, null, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true})
   }
 
   findAddress = (GEO_CODE_URL) => {
@@ -177,6 +180,7 @@ class NewLocationForm extends React.Component {
     }
 
     return (
+
       <div className="put-it-in-a-div">
 
             <NavBar />
@@ -195,8 +199,7 @@ class NewLocationForm extends React.Component {
 
               <Form onSubmit={this.onSubmit}>
                 <Form.Field>
-                  <Input action='Go' placeholder='Enter address (optional)..' value={this.state.text} onChange={this.handleChange} />
-
+                  <Input action='Go' placeholder={'Enter address (optional)..'} value={this.state.text} onChange={this.handleChange} />
 
                 </Form.Field>
               </Form>

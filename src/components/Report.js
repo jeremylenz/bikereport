@@ -99,6 +99,10 @@ class Report extends React.Component {
                 labelPosition='right'
                 onClick={this.incrementLikes}
                 />
+              {this.props.admin &&
+                <Button negative onClick={() => {this.props.deleteReport(thisReport.id)}}>Delete</Button>
+
+              }
 
 
                 </Feed.Like>

@@ -202,7 +202,7 @@ class NewReportForm extends React.Component {
     .then(resp => resp.json())
     .then((resp) => {
       console.log(resp)
-      this.props.loadNewReport(resp.report)
+      this.props.loadNewReport(resp.report, resp.image)
       this.setState({
         saveStatus: 'saved',
         imageAjax: null
@@ -315,31 +315,33 @@ render () {
             <Header as='h3'>Details</Header>
             <TextArea autoHeight placeholder='Give us the deets' rows={2} value={this.state.details} onChange={this.handleTextAreaChange}/>
             <Divider />
-
+            <Header as='h4'>Upload an image(optional)</Header>
             <ImageUploader setImageToUpload={this.setImageToUpload}/>
+            <div className='new-report-form-buttons'>
 
-            {this.state.saveStatus === 'waiting' &&
-            <Button.Group>
-            <Button type='submit' basic color='green' onClick={this.handleSubmit}>Submit</Button>
-            <Button onClick={this.cancelForm} basic color='red'>Cancel</Button>
-            </Button.Group>
-
-            }
-            {this.state.saveStatus === 'saving' &&
+              {this.state.saveStatus === 'waiting' &&
               <Button.Group>
-              <Button type='submit' basic color='green' disabled >Saving...</Button>
-              <Button disabled basic color='red'>...</Button>
-              </Button.Group>
-            }
-            {this.state.saveStatus === 'saved' &&
-              <Button.Group>
-              <Button type='submit' basic color='green' disabled >Saved!</Button>
-              <Button disabled basic color='green'>
-                <Icon name='checkmark' color='green' />
-              </Button>
+              <Button type='submit' basic color='green' onClick={this.handleSubmit}>Submit</Button>
+              <Button onClick={this.cancelForm} basic color='red'>Cancel</Button>
               </Button.Group>
 
-            }
+              }
+              {this.state.saveStatus === 'saving' &&
+                <Button.Group>
+                <Button type='submit' basic color='green' disabled >Saving...</Button>
+                <Button disabled basic color='red'>...</Button>
+                </Button.Group>
+              }
+              {this.state.saveStatus === 'saved' &&
+                <Button.Group>
+                <Button type='submit' basic color='green' disabled >Saved!</Button>
+                <Button disabled basic color='green'>
+                  <Icon name='checkmark' color='green' />
+                </Button>
+                </Button.Group>
+
+              }
+            </div>
 
 
 

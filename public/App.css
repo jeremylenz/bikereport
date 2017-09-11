@@ -74,7 +74,22 @@
 .report-pic {
   clear: both;
   padding-bottom: 12px;
-  image-orientation: from-image;
+  image-orientation: from-image;  /*this doesn't work, THANKS CHROME */
+
+}
+
+@media only screen and (max-width: 768px) {
+  div.reports-container-column.dont.override.my.css {
+    width: 90%;
+  }
+}
+
+.new-report-form-buttons {
+  margin-top: 12px;
+}
+
+.main-page {
+  width: 100%;
 }
 
 .ui.horizontal.segments {
