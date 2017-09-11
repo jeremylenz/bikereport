@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Grid, Header, Divider, Icon } from 'semantic-ui-react'
 import config from '../config.js'
-import TwitterCallback from './TwitterCallback'
+// import TwitterCallback from './TwitterCallback'
 // import config from '../config'
 import { Redirect } from 'react-router-dom'
 

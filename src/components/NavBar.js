@@ -13,7 +13,7 @@ class NavBar extends React.Component {
   componentDidMount() {
     let name = localStorage.getItem('name')
     let guest = localStorage.getItem('guest')
-    if((guest === 'false') && (name != 'Guest')) {
+    if((guest === 'false') && (name !== 'Guest')) {
       this.setState({
         name: name
       })
@@ -40,7 +40,7 @@ class NavBar extends React.Component {
                 {this.state.name === 'Guest' &&
                 <Dropdown.Item as='a' href='/'>Log In</Dropdown.Item>
                 }
-                {this.state.name != 'Guest' &&
+                {this.state.name !== 'Guest' &&
                 <Dropdown.Item as='a' href='/'>Log Out</Dropdown.Item>
                 }
               </Dropdown.Menu>

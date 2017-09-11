@@ -1,6 +1,7 @@
 import React from 'react'
 import config from '../config.js'
 import { Form, Grid, Dropdown, Header, TextArea, Divider, Button, Icon } from 'semantic-ui-react'
+import ImageUploader from './ImageUploader'
 
 const OUR_API_URL = config.OUR_API_URL
 
@@ -12,9 +13,12 @@ class NewReportForm extends React.Component {
     let reportTypes = [
       'Safety issue - General',
       'Police vehicle in bike lane',
+      'Truck/commercial vehicle in bike lane',
       'Other motor vehicle in a bike lane',
       'Police activity',
+      'Metal Plates',
       'Street defect - Pothole/Pavement issue',
+      'Construction',
       'Obstruction in a bike lane',
       'Police blockade',
       'Standing water on bike path',
@@ -42,7 +46,8 @@ class NewReportForm extends React.Component {
       typeOptions: typeOptions,
       selectedBikePathId: 1,
       saveStatus: 'waiting',
-      formStatus: 'hidden'
+      formStatus: 'hidden',
+      imageAjax: null
 
     }
   }
@@ -148,6 +153,13 @@ class NewReportForm extends React.Component {
 
   }
 
+  setImageToUpload = (header, body) => {
+    console.log('setting imageAjax', body)
+    this.setState({
+      imageAjax: {header: header, body: body}
+    })
+  }
+
   saveReport = (reportType, details, bikePathId, locationId, userId) => {
     this.setState({
       saveStatus: 'saving'
@@ -161,7 +173,7 @@ class NewReportForm extends React.Component {
     {"report": {
                   "report_type": reportType,
                   "details": details,
-                  "likes": 0
+                  "likes": 0,
                   },
       "bike_path": {
                   "id": bikePathId
@@ -171,8 +183,16 @@ class NewReportForm extends React.Component {
                 },
       "user": {
                   "id": userId
-                  }
+                },
+
     }
+    if(this.state.imageAjax) {
+      console.log('adding imageAjax to body')
+      myBody["report"]["image"] = this.state.imageAjax.body.image
+      myBody["file_data"] = this.state.imageAjax.body.file_data
+    }
+
+    console.log(myBody)
 
     fetch(`${OUR_API_URL}/reports`,
       {method: 'POST',
@@ -182,13 +202,16 @@ class NewReportForm extends React.Component {
     .then(resp => resp.json())
     .then((resp) => {
       console.log(resp)
-      this.props.loadNewReport(resp)
+      this.props.loadNewReport(resp.report)
       this.setState({
-        saveStatus: 'saved'
+        saveStatus: 'saved',
+        imageAjax: null
       }, this.resetForm)
     })
 
     }
+
+
 
   handleBikePathDDChange = (event) => {
     // This function filters the locations dropdown to only those on the selected bike path
@@ -248,6 +271,12 @@ class NewReportForm extends React.Component {
     })
   }
 
+  setImageId = (id) => {
+    this.setState({
+      imageId: id
+    })
+  }
+
 
 
 
@@ -286,6 +315,9 @@ render () {
             <Header as='h3'>Details</Header>
             <TextArea autoHeight placeholder='Give us the deets' rows={2} value={this.state.details} onChange={this.handleTextAreaChange}/>
             <Divider />
+
+            <ImageUploader setImageToUpload={this.setImageToUpload}/>
+
             {this.state.saveStatus === 'waiting' &&
             <Button.Group>
             <Button type='submit' basic color='green' onClick={this.handleSubmit}>Submit</Button>

@@ -72,7 +72,7 @@ class TwitterCallback extends React.Component {
   issueTwitterJwt = (resp) => {
 
     let screenName = resp.screen_name
-    let userId = resp.user_id
+    // let userId = resp.user_id
     let oauthToken = resp.oauth_token
     let oauthTokenSecret = resp.oauth_token_secret
       this.setState({
