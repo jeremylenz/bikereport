@@ -18,7 +18,9 @@ const App = () => {
         <Route exact path='/newlocation' component={NewLocationForm} />
         <Route exact path='/main' component={MainPage} />
         <Route exact path='/' component={LoginPage} />
+        <Route path='/newlocation/:report_type' component={NewLocationForm} />
         <Route path='/twitter/:token/:verifier' component={TwitterCallback} />
+        <Route path='/newreport/:location_id/:report_type' component={MainPage} />
         <Route path='/facebook' component={FacebookCallback} />
 
       </div>

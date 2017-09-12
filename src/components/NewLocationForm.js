@@ -26,7 +26,9 @@ class NewLocationForm extends React.Component {
       bikePathsLoaded: false,
       bikePaths: [],
       saveStatus: 'waiting',
-      goBack: false
+      locationId: null,
+      goBack: false,
+      redirectToNewReportForm: false
     }
   }
 
@@ -147,9 +149,10 @@ class NewLocationForm extends React.Component {
       body: JSON.stringify(myBody)
     })
     .then(resp => resp.json())
-    .then(this.setState({
-      saveStatus: 'saved'
-    }))
+    .then(resp => this.setState({
+      saveStatus: 'saved',
+      locationId: resp.id,
+    }, this.proceedToNewReport))
   }
 
   updateMarker = (mapCenter) => {
@@ -165,6 +168,13 @@ class NewLocationForm extends React.Component {
     })
   }
 
+  proceedToNewReport = () => {
+    setTimeout(() => {this.setState({
+      redirectToNewReportForm: true
+    })}, 1000)
+
+  }
+
 
 
 
@@ -176,6 +186,12 @@ class NewLocationForm extends React.Component {
     if(this.state.goBack === true) {
       return (
         <Redirect to={'/main'} />
+      )
+    }
+
+    if(this.state.redirectToNewReportForm) {
+      return (
+        <Redirect to={`/newreport/${this.state.locationId}/${this.props.match.params.report_type}`} />
       )
     }
 
@@ -206,7 +222,7 @@ class NewLocationForm extends React.Component {
             </Segment>
 
               <Segment>
-                <Button floated='left' basic icon='arrow left' color='green' onClick={this.goBack}/>
+                <Button floated='left' basic icon='cancel' color='red' onClick={this.goBack}/>
 
               {this.state.loadingCurrentLocation && (
               <Button loading size='huge' floated='right' />
@@ -220,7 +236,7 @@ class NewLocationForm extends React.Component {
 
 
               <Modal
-              trigger={<Button floated='right' onClick={this.handleOpen} disabled={!this.state.bikePathsLoaded}>Save Location</Button>}
+              trigger={<Button floated='right' onClick={this.handleOpen} primary disabled={!this.state.bikePathsLoaded}>Set Location</Button>}
               open={this.state.modalOpen}
               onClose={this.handleClose}
               dimmer='inverted'

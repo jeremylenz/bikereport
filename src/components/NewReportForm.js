@@ -7,8 +7,8 @@ const OUR_API_URL = config.OUR_API_URL
 
 class NewReportForm extends React.Component {
 
-  constructor() {
-    super ()
+  constructor(props) {
+    super (props)
 
     let reportTypes = [
       'Safety issue - General',
@@ -34,19 +34,42 @@ class NewReportForm extends React.Component {
       }
     })
 
+    let locationId;
+    let locationChosen;
+    let formStatus;
+    let selectedReportType
+
+    if(props.locationId) {
+      locationId = props.locationId
+      locationChosen = true
+      formStatus = 'showing'
+    } else {
+      locationId = null
+      locationChosen = false
+      formStatus = 'hidden'
+    }
+
+    if(props.reportType) {
+      selectedReportType = props.reportType
+    } else {
+      selectedReportType = 0
+    }
 
     this.state = {
       bikePathsLoaded: false,
       locationsLoaded: false,
+      locationChosen: locationChosen,
       details: '',
       bikePaths: [],
       locations: [],
+      locationId: locationId,
       bikePathOptions: [],
       locationOptions: [],
       typeOptions: typeOptions,
       selectedBikePathId: 1,
+      selectedReportType: selectedReportType,
       saveStatus: 'waiting',
-      formStatus: 'hidden',
+      formStatus: formStatus,
       imageAjax: null
 
     }
@@ -91,10 +114,19 @@ class NewReportForm extends React.Component {
               value: location.name,
               text: location.name}
     })
+
+    let selectedBikePathId;
+
+    if(this.state.locationId == null) {
+      selectedBikePathId = 1
+    } else {
+      selectedBikePathId = resp.find((loc) => {return loc.id == this.state.locationId}).bike_path_id
+    }
     this.setState({
       locationsLoaded: true,
       locationOptions: locationOptions,
-      locations: resp
+      locations: resp,
+      selectedBikePathId: selectedBikePathId
     })
   }
 
@@ -141,13 +173,11 @@ class NewReportForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    let reportType = event.target.parentElement.parentElement.children[4].children[0].innerText
-    let bikePath = event.target.parentElement.parentElement.children[6].children[1].innerText
-    let location = event.target.parentElement.parentElement.children[7].children[2].innerText
+    let reportType = event.target.parentElement.parentElement.parentElement.children[4].innerText
     let details = this.state.details
-    let bikePathId = this.state.bikePaths.find((bp) => {return bp.name === bikePath}).id
-    let locationId = this.state.locations.find((loc) => {return loc.name === location}).id
-    let userId = 1
+    let bikePathId = this.state.selectedBikePathId
+    let locationId = this.state.locationId
+    let userId = 2
 
     this.saveReport(reportType, details, bikePathId, locationId, userId)
 
@@ -260,6 +290,7 @@ class NewReportForm extends React.Component {
 
   resetForm = () => {
     // Allow the user, for 1000 milliseconds, to bask in the joy of having successfully saved
+    window.history.pushState({}, "Bikeways", "/main")
     setTimeout(this.cancelForm, 1000)
   }
 
@@ -267,7 +298,10 @@ class NewReportForm extends React.Component {
     this.setState({
       formStatus: 'hidden',
       saveStatus: 'waiting',
-      details: ''
+      details: '',
+      locationId: null,
+      selectedBikePathId: 0,
+      locationChosen: false
     })
   }
 
@@ -277,10 +311,39 @@ class NewReportForm extends React.Component {
     })
   }
 
+  handleReportTypeDDChange = (e) => {
+    setTimeout(() => {
+      let reportTypeText = document.querySelector('#report-type-dropdown div.selected.item').innerText
+      let reportIdx = this.state.typeOptions.findIndex((rt) => {return rt.text === reportTypeText})
+      this.setState({
+      selectedReportType: reportIdx
+    })}, 50)
+
+
+  }
+
 
 
 
 render () {
+  let locationName;
+  let bikePathName;
+
+
+  if(this.state.locationId && (this.state.locationsLoaded === true)) {
+    locationName = this.state.locations.find((loc) => {return loc.id == this.state.locationId}).name
+  } else {
+    locationName = "None"
+  }
+
+  if(this.state.selectedBikePathId && (this.state.bikePathsLoaded === true)) {
+    bikePathName = this.state.bikePaths.find((bikepath) => {return bikepath.id === this.state.selectedBikePathId}).name
+  } else {
+    bikePathName = "Loading.."
+  }
+
+  let reportTypeText = this.state.typeOptions[this.state.selectedReportType].value
+
   return (
 
         <Grid.Column>
@@ -299,18 +362,24 @@ render () {
             <Header as='h3'>What are you reporting?</Header>
 
             <label htmlFor='type'>Report type:</label>
-            <Form.Dropdown placeholder='Report type:' id='type' options={this.state.typeOptions} />
+            <Form.Dropdown placeholder='Report type:' id='report-type-dropdown' options={this.state.typeOptions} value={reportTypeText} onChange={this.handleReportTypeDDChange} />
 
             <Header as='h3'>Where did you see it?</Header>
-            <Form.Field inline>
-              <label htmlFor='bikepath'>Bike path:</label>
-              <Dropdown placeholder='Bike path: ' id='bikepath' options={this.state.bikePathOptions} onChange={this.handleBikePathDDChange} />
-            </Form.Field>
-            <Form.Field inline>
-              <label htmlFor='location'>Location:</label>
-              <a href='/newlocation' style={{float: 'right'}}>New location</a>
-              <Dropdown placeholder='Location: ' id='location' options={this.state.locationOptions} />
-            </Form.Field>
+            {this.state.locationChosen &&
+            <div className='put-it-in-a-div'>
+              <Header as='h4'>Location: </Header>
+                <a href={`/newlocation/${this.state.selectedReportType}`} style={{float: 'right'}}>Change location</a>
+                <p>{locationName}</p>
+              <Header as='h4'>Bike Path: </Header>
+                <p>{bikePathName}</p>
+            </div>
+            }
+
+            {this.state.locationChosen === false &&
+              <Button as='a' href={`/newlocation/${this.state.selectedReportType}`} basic size='big' color='green'>
+                <Icon name='crosshairs' size='big' />Choose Location
+              </Button>
+            }
 
             <Header as='h3'>Details</Header>
             <TextArea autoHeight placeholder='Give us the deets' rows={2} value={this.state.details} onChange={this.handleTextAreaChange}/>
