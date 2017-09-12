@@ -6,6 +6,8 @@ import config from '../config.js'
 import { Redirect } from 'react-router-dom'
 
 const OUR_API_URL = config.OUR_API_URL
+const FACEBOOK_APP_ID = config.FACEBOOK_APP_ID
+const OUR_OWN_URL = config.OUR_OWN_URL
 
 class LoginBox extends React.Component {
 
@@ -15,14 +17,16 @@ class LoginBox extends React.Component {
       redirect: false,
       loading: false,
       twitterButtonEnabled: false,
-      facebookButtonEnabled: false,
+      facebookButtonEnabled: true,
       twitterButtonStatus: 'initial state',
-      twitterButtonHref: ''
+      twitterButtonHref: '',
+      facebookButtonHref: `https://www.facebook.com/v2.10/dialog/oauth?client_id=${FACEBOOK_APP_ID}&redirect_uri=${OUR_OWN_URL}/facebook`
     }
   }
 
   componentDidMount () {
-    this.requestRequestToken()
+    this.requestTwitterRequestToken() // twitter
+
   }
 
   processGuestLogin = () => {
@@ -68,7 +72,7 @@ class LoginBox extends React.Component {
     console.log('set JWT!')
   }
 
-  requestRequestToken = () => {
+  requestTwitterRequestToken = () => {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json')
     myHeaders.append('Accept', 'application/json')
@@ -88,10 +92,10 @@ class LoginBox extends React.Component {
       body: JSON.stringify(myBody)
     })
     .then(resp => resp.json())
-    .then(resp => this.loadRequestToken(resp))
+    .then(resp => this.loadTwitterRequestToken(resp))
   }
 
-  loadRequestToken = (resp) => {
+  loadTwitterRequestToken = (resp) => {
     console.log(resp)
     let oauth_token = resp.oauth_token
     let oauth_token_secret = resp.oauth_token_secret
@@ -102,6 +106,7 @@ class LoginBox extends React.Component {
     })
 
   }
+
 
   render () {
 
@@ -118,6 +123,8 @@ class LoginBox extends React.Component {
         <Divider />
 
         <Button
+          as='a'
+          href={this.state.facebookButtonHref}
           disabled={!this.state.facebookButtonEnabled}
           fluid
           color='facebook'
