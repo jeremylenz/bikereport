@@ -1,7 +1,7 @@
 import React from 'react'
 import config from '../config.js'
 import { Redirect } from 'react-router-dom'
-import { Dimmer, Loader } from 'semantic-ui-react'
+import { Dimmer, Loader, Button, Message } from 'semantic-ui-react'
 
 
 const OUR_API_URL = config.OUR_API_URL
@@ -13,7 +13,9 @@ class FacebookCallback extends React.Component {
   constructor () {
     super ()
     this.state = {
-      done: false
+      done: false,
+      error: false,
+      error_list: []
 
     }
   }
@@ -23,6 +25,7 @@ class FacebookCallback extends React.Component {
     console.log(this.props)
     let urlQuery = this.props.location.search
     if(urlQuery.includes("error")) {
+      this.setState({error: true})
       console.log('error logging in, ', urlQuery.split('?'))
     } else {
     let facebookCode = this.props.location.search.split('?code=')[1]
@@ -77,6 +80,17 @@ class FacebookCallback extends React.Component {
 
     if(this.state.done) {
       return (<Redirect to={'/main'} />)
+    } else if (this.state.error) {
+      return (
+        <div className='put-it-in-a-div' >
+
+          <Message error header='Error logging in with Facebook'
+            list={['You may have declined permissions', `Sorry ¯\_(ツ)_/¯"`]} />
+          <Button as='a' href='/'>Back to login</Button>
+
+        </div>
+      )
+
     } else {
       return ( <Dimmer active inverted>
         <Loader size='large'>Logging in with Facebook...</Loader>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Grid, Header, Divider, Icon } from 'semantic-ui-react'
+import { Button, Grid, Header, Divider, Icon, Message } from 'semantic-ui-react'
 import config from '../config.js'
 // import TwitterCallback from './TwitterCallback'
 // import config from '../config'
@@ -27,6 +27,13 @@ class LoginBox extends React.Component {
   componentDidMount () {
     this.requestTwitterRequestToken() // twitter
 
+  }
+
+  handleError = (reason) => {
+    this.setState({
+      error: true,
+      errorReason: reason.stack
+    })
   }
 
   processGuestLogin = () => {
@@ -62,6 +69,7 @@ class LoginBox extends React.Component {
       })
     .then(resp => resp.json())
     .then(resp => this.setGuestJWT(resp))
+    .catch(this.handleError)
 
 
   }
@@ -93,12 +101,13 @@ class LoginBox extends React.Component {
     })
     .then(resp => resp.json())
     .then(resp => this.loadTwitterRequestToken(resp))
+    .catch(this.handleError)
   }
 
   loadTwitterRequestToken = (resp) => {
     console.log(resp)
     let oauth_token = resp.oauth_token
-    let oauth_token_secret = resp.oauth_token_secret
+    // let oauth_token_secret = resp.oauth_token_secret
 
     this.setState({
       twitterButtonEnabled: true,
@@ -113,13 +122,25 @@ class LoginBox extends React.Component {
     if(this.state.redirect) {
       return (
         <Redirect to={'/main'} />
+        )
+    }
+
+    if(this.state.error) {
+      return (
+        <div className='put-it-in-a-div' >
+
+          <Message error header='Error logging in'
+            list={[this.state.errorReason, `Sorry ¯\\_(ツ)_/¯\"`]} />
+          <Button onClick={this.processGuestLogin}>Log in as Guest</Button>
+
+        </div>
       )
     }
 
     return (
       <Grid.Column className='login-box'>
         <Header as='h2'>Welcome to BikeWays</Header>
-        <Header as='h4'>Log in with...</Header>
+        <Header as='h4'>Log in with Facebook or Twitter to post!</Header>
         <Divider />
 
         <Button

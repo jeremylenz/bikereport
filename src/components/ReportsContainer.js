@@ -2,7 +2,7 @@ import React from 'react'
 import config from '../config'
 import Report from './Report'
 import NewReportForm from './NewReportForm'
-import { Feed, Button } from 'semantic-ui-react'
+import { Feed, Button, Message } from 'semantic-ui-react'
 
 
 const OUR_API_URL = config.OUR_API_URL
@@ -20,7 +20,9 @@ class ReportsContainer extends React.Component {
       locations: [],
       images: [],
       loggedIn: localStorage.getItem('guest') === "false",
-      admin: false
+      admin: false,
+      error: false,
+      errorReason: ''
     }
   }
 
@@ -42,7 +44,15 @@ class ReportsContainer extends React.Component {
       images: resp[4],
       reportsLoaded: true
     }))
+    .catch(this.handleError)
 
+  }
+
+  handleError = (reason) => {
+    this.setState({
+      error: true,
+      errorReason: reason.stack
+    })
   }
 
   loadReports = (resp) => {
@@ -59,7 +69,6 @@ class ReportsContainer extends React.Component {
     } else {
       newImages = [image, ...this.state.images]
     }
-    console.log(newImages, this)
     this.setState({
       reports: [report, ...this.state.reports],
       images: newImages
@@ -85,9 +94,17 @@ class ReportsContainer extends React.Component {
     .then(this.setState({
       reports: this.state.reports.filter((rep) => {return rep.id !== id})
     }))
+    .catch(this.handleError)
   }
 
   render () {
+
+    if(this.state.error) {
+      return (
+        <Message error header='Error loading reports'
+          list={[this.state.errorReason, `Sorry ¯\\_(ツ)_/¯\"`]} />
+      )
+    }
 
 
 
