@@ -8,6 +8,7 @@ import NewLocationForm from './components/NewLocationForm.js'
 import MainPage from './components/MainPage'
 import LoginPage from './components/LoginPage'
 import TwitterCallback from './components/TwitterCallback'
+import FacebookCallback from './components/FacebookCallback'
 
 
 const App = () => {
@@ -20,6 +21,8 @@ const App = () => {
         <Route path='/newlocation/:report_type' component={NewLocationForm} />
         <Route path='/twitter/:token/:verifier' component={TwitterCallback} />
         <Route path='/newreport/:location_id/:report_type' component={MainPage} />
+        <Route path='/facebook' component={FacebookCallback} />
+
       </div>
     </Router>
 
