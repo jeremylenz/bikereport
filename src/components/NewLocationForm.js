@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Icon, Input, Segment, Modal, Header, Dropdown, Label } from 'semantic-ui-react'
+import { Form, Button, Icon, Input, Segment, Modal, Header, Dropdown, Search } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
 import NavBar from './NavBar'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
@@ -23,8 +23,10 @@ class NewLocationForm extends React.Component {
       locationNameInput: '',
       bikePathInput: 'None',
       bikePathOptions: [],
+      bikePathSearchResults: [],
       bikePathsLoaded: false,
       bikePaths: [],
+      bikePathMenuOpen: false,
       saveStatus: 'waiting',
       locationId: null,
       goBack: false,
@@ -39,17 +41,27 @@ class NewLocationForm extends React.Component {
     .then((resp) => this.loadBikePaths(resp))
   }
 
+  pluralize(number, string) {
+    if(number === 1) {
+      return `${number} ${string}`
+    } else {
+      return `${number} ${string}s`
+    }
+  }
+
 
 
   loadBikePaths = (resp) => {
     let bikePathOptions = resp.map((bikePath) => {
-      return {key: bikePath.id,
-              value: bikePath.name,
-              text: bikePath.name}
+      return {id: bikePath.id,
+              title: bikePath.name,
+              description: `${this.pluralize(bikePath.reports_count, 'report')}, ${this.pluralize(bikePath.locations_count, 'location')}`
+            }
     })
     this.setState({
       bikePathsLoaded: true,
       bikePathOptions: bikePathOptions,
+      bikePathSearchResults: bikePathOptions,
       bikePaths: resp
     })
   }
@@ -70,6 +82,76 @@ class NewLocationForm extends React.Component {
     })
   }
 
+  handleBikePathDDChange = (event) => {
+    let bikePaths = this.state.bikePathOptions
+    let searchQuery = event.target.value
+    let lcSearchQuery = searchQuery.toLowerCase()
+    this.setState({
+      bikePathInput: searchQuery,
+      bikePathSearchResults: bikePaths.filter((bp) => {return bp.title.toLowerCase().includes(lcSearchQuery)})
+    })
+  }
+
+  handleBikePathResultSelect = (event, data) => {
+    this.setState({
+      bikePathInput: data.result.title
+    })
+  }
+
+  findOrCreate = (bikePathName) => {
+    if(this.state.bikePathsLoaded === false) {
+      console.error('bike paths not loaded')
+      return null
+    }
+    let result = this.state.bikePaths.find((bikePath) => {
+      return bikePath.name === bikePathName
+    })
+    if(typeof result === 'undefined') {
+      return this.createNewBikePath(bikePathName)
+    } else {
+      console.log('found bike path: ', result)
+      this.setState({
+        selectedBikePathId: result.id,
+        bikePathInput: result.name
+      }, this.saveLocation)
+      return Promise.resolve(result)
+    }
+  }
+
+  createNewBikePath = (bikePathName) => {
+    console.log('creating new bikePath...')
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json')
+    myHeaders.append('Accept', 'application/json')
+    myHeaders.append('Authorization', 'Bearer ' + localStorage.getItem('jwt'))
+
+    let myBody =
+    {"bike_path": {
+                  "name": bikePathName
+                  }
+    }
+
+    return fetch(`${OUR_API_URL}/bike_paths`,
+      {method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(myBody)
+    })
+    .then(resp => resp.json())
+    .then((resp) => {console.log(resp);
+      this.setState({bikePaths: [resp, ...this.state.bikePaths],
+      selectedBikePathId: resp.id, bikePathInput: resp.name}, this.saveLocation)
+    })
+
+  }
+
+  clearBikePathInput = () => {
+    this.setState({
+      bikePathInput: ''
+    })
+  }
+
+
+
   handleFormChange = (event) => {
     this.setState({
       locationNameInput: event.target.value
@@ -88,7 +170,7 @@ class NewLocationForm extends React.Component {
     // navigator.geolocation.getCurrentPosition(getCoor, errorCoor, {maximumAge:60000, timeout:5000, enableHighAccuracy:true});
 
     navigator.geolocation.getCurrentPosition((pos) => {
-      alert(parseInt(pos.coords.latitude))
+
                 this.setState({
                   mapCenter: {
                     lat: pos.coords.latitude,
@@ -117,14 +199,21 @@ class NewLocationForm extends React.Component {
 
   handleClose = () => this.setState({ modalOpen: false, saveStatus: 'waiting' })
 
-  saveLocation = (event) => {
+  prepareSave = () => {
+    this.findOrCreate(this.state.bikePathInput)
+
+
+  }
+
+  saveLocation = () => {
+
     this.setState({
       saveStatus: 'saving'
     })
     console.log(this.state.currentMarker)
     let newLocationName = this.state.locationNameInput
-    let bikePathName = event.target.parentElement.children[1].children[1].innerText
-    let bikePathId = this.state.bikePaths.find((bikePath) => {return bikePath.name === bikePathName}).id
+    let bikePathName = this.state.bikePathInput
+    let bikePathId = this.state.selectedBikePathId
 
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json')
@@ -159,7 +248,7 @@ class NewLocationForm extends React.Component {
     this.setState({
       currentMarker: mapCenter
     })
-    console.log(mapCenter)
+    // console.log(mapCenter)
   }
 
   goBack = () => {
@@ -251,12 +340,23 @@ class NewLocationForm extends React.Component {
                     <label>Location name: </label>
                     <input placeholder='Describe the location' value={this.locationNameInput} onChange={this.handleFormChange}/>
                   </Form.Field>
-                  <Dropdown placeholder='On a bike lane or path?'
-                    fluid search selection
-                    options={this.state.bikePathOptions}
-                    />
+                  <Form.Field>
+                    <label>On a bike lane or path?   (type to search, or create new)</label>
+                  </Form.Field>
+                  <Form.Field>
+
+                  <Search
+                    icon='bicycle'
+                    value={this.state.bikePathInput}
+                    results={this.state.bikePathSearchResults}
+                    onSearchChange={this.handleBikePathDDChange}
+                    onResultSelect={this.handleBikePathResultSelect}
+                    showNoResults={false}
+                  >
+                  </Search>
+                </Form.Field>
                   {this.state.saveStatus === 'waiting' &&
-                  <Button type='submit' onClick={this.saveLocation}>Save</Button>
+                  <Button type='submit' onClick={this.prepareSave}>Save</Button>
                   }
                   {this.state.saveStatus === 'saving' &&
                   <Button type='submit' loading primary>Saving...</Button>

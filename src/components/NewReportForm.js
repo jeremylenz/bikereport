@@ -1,6 +1,6 @@
 import React from 'react'
 import config from '../config.js'
-import { Form, Grid, Dropdown, Header, TextArea, Divider, Button, Icon } from 'semantic-ui-react'
+import { Form, Grid, Header, TextArea, Divider, Button, Icon, Message } from 'semantic-ui-react'
 import ImageUploader from './ImageUploader'
 
 const OUR_API_URL = config.OUR_API_URL
@@ -70,7 +70,9 @@ class NewReportForm extends React.Component {
       selectedReportType: selectedReportType,
       saveStatus: 'waiting',
       formStatus: formStatus,
-      imageAjax: null
+      imageAjax: null,
+      error: false,
+      errorReason: ''
 
     }
   }
@@ -89,8 +91,16 @@ class NewReportForm extends React.Component {
     Promise.all(fetches)
     .then((resp) => {this.loadBikePaths(resp[0])
                     this.loadLocations(resp[1])})
+                    .catch(this.handleError)
 
 
+  }
+
+  handleError = (reason) => {
+    this.setState({
+      error: true,
+      errorReason: reason.stack
+    })
   }
 
   loadBikePaths = (resp) => {
@@ -136,61 +146,30 @@ class NewReportForm extends React.Component {
     }).id
   }
 
-  findOrCreate = (bikePathName) => {
-    let result = this.state.bikePaths.find((bikePath) => {
-      return bikePath.name === bikePathName
-    })
-    if(typeof result === 'undefined') {
-      this.createNewBikePath(bikePathName)
-    } else {
-      console.log(result)
-      return result
-    }
-  }
 
-  createNewBikePath = (bikePathName) => {
-    console.log('creating new bikePath...')
-    let myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json')
-    myHeaders.append('Accept', 'application/json')
 
-    let myBody =
-    {"bike_path": {
-                  "name": bikePathName
-                  }
-    }
 
-    fetch(`${OUR_API_URL}/bike_paths`,
-      {method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify(myBody)
-    })
-    .then(resp => resp.json())
-    .then((resp) => {console.log(resp);
-      this.setState({bikePaths: [resp, ...this.state.bikePaths],
-      selectedBikePathId: resp.id})
-    })
-  }
 
   handleSubmit = (event) => {
     let reportType = event.target.parentElement.parentElement.parentElement.children[4].innerText
     let details = this.state.details
     let bikePathId = this.state.selectedBikePathId
     let locationId = this.state.locationId
-    let userId = 2
+    let username = localStorage.getItem('name')
 
-    this.saveReport(reportType, details, bikePathId, locationId, userId)
+
+
+    this.saveReport(reportType, details, bikePathId, locationId, username)
 
   }
 
   setImageToUpload = (header, body) => {
-    console.log('setting imageAjax', body)
     this.setState({
       imageAjax: {header: header, body: body}
     })
   }
 
-  saveReport = (reportType, details, bikePathId, locationId, userId) => {
+  saveReport = (reportType, details, bikePathId, locationId, username) => {
     this.setState({
       saveStatus: 'saving'
     })
@@ -212,17 +191,15 @@ class NewReportForm extends React.Component {
                   "id": locationId
                 },
       "user": {
-                  "id": userId
+                  "username": username
                 },
 
     }
     if(this.state.imageAjax) {
-      console.log('adding imageAjax to body')
       myBody["report"]["image"] = this.state.imageAjax.body.image
       myBody["file_data"] = this.state.imageAjax.body.file_data
     }
 
-    console.log(myBody)
 
     fetch(`${OUR_API_URL}/reports`,
       {method: 'POST',
@@ -231,7 +208,6 @@ class NewReportForm extends React.Component {
     })
     .then(resp => resp.json())
     .then((resp) => {
-      console.log(resp)
       this.props.loadNewReport(resp.report, resp.image)
       this.setState({
         saveStatus: 'saved',
@@ -326,9 +302,29 @@ class NewReportForm extends React.Component {
 
 
 render () {
+
+  if(this.state.error) {
+    return (
+      <Message error header='Error saving report'
+        list={[this.state.errorReason, `Sorry ¯\\_(ツ)_/¯\"`]} />
+    )
+  }
+
+  let googleMapImgUrl;
+  let googleMapLinkUrl;
+  if (this.state.locationChosen && this.state.locationsLoaded) {
+    let location = this.state.locations.find((loc) => {return loc.id == this.state.locationId})
+    let locLat = location.lat
+    let locLong = location.long
+    googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${locLat},${locLong}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${config.GOOGLE_MAPS_API_KEY}`
+    googleMapLinkUrl = `https://www.google.com/maps/?q=loc:${locLat},${locLong}&z=18`
+  } else {
+    googleMapImgUrl = ""
+    googleMapLinkUrl = ""
+  }
+
   let locationName;
   let bikePathName;
-
 
   if(this.state.locationId && (this.state.locationsLoaded === true)) {
     locationName = this.state.locations.find((loc) => {return loc.id == this.state.locationId}).name
@@ -365,10 +361,12 @@ render () {
             <Form.Dropdown placeholder='Report type:' id='report-type-dropdown' options={this.state.typeOptions} value={reportTypeText} onChange={this.handleReportTypeDDChange} />
 
             <Header as='h3'>Where did you see it?</Header>
+
             {this.state.locationChosen &&
             <div className='put-it-in-a-div'>
-              <Header as='h4'>Location: </Header>
-                <a href={`/newlocation/${this.state.selectedReportType}`} style={{float: 'right'}}>Change location</a>
+                <a target="_blank" id='report-mini-map' href={googleMapLinkUrl}><img src={googleMapImgUrl} height='100' width='100' alt='google map'/></a>
+                <a href={`/newlocation/${this.state.selectedReportType}`} style={{float: 'right', clear: 'right'}}>Change Location</a>
+                <Header as='h4'>Location: </Header>
                 <p>{locationName}</p>
               <Header as='h4'>Bike Path: </Header>
                 <p>{bikePathName}</p>

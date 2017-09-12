@@ -1,7 +1,7 @@
 import React from 'react'
 import config from '../config.js'
 import { Redirect } from 'react-router-dom'
-import { Dimmer, Loader } from 'semantic-ui-react'
+import { Dimmer, Loader, Message, Button } from 'semantic-ui-react'
 
 // 1. User clicks login with Twitter
 // - Assemble Oauth headers
@@ -28,6 +28,7 @@ class TwitterCallback extends React.Component {
     super ()
     this.state = {
       done: false,
+      error: false
        // ['initial state', 'request  requested', 'request token received', 'user redirected to twitter', 'twitter redirected the user here', 'access token requested', 'access token received', 'jwt token requested', 'jwt token received', 'process complete']
     }
   }
@@ -67,6 +68,7 @@ class TwitterCallback extends React.Component {
       })
       .then(resp => resp.json())
       .then(resp => this.issueTwitterJwt(resp))
+      .catch(this.handleError)
 
   }
 
@@ -120,6 +122,18 @@ class TwitterCallback extends React.Component {
 
     if(this.state.done) {
       return (<Redirect to={'/main'} />)
+    } else if (this.state.error) {
+      return (
+        <div className='put-it-in-a-div' >
+
+          <Message error header='Error logging in with Twitter'
+
+            list={[`Sorry ¯\\_(ツ)_/¯\"`]} />
+          <Button as='a' href='/'>Back to login</Button>
+
+        </div>
+      )
+
     } else {
       return ( <Dimmer active inverted>
         <Loader size='large'>Logging in with Twitter...</Loader>

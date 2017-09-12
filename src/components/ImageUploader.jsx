@@ -14,7 +14,6 @@ class ImageUploader extends React.Component {
 
 
   setImage() {
-   console.log('file reader: ', this.state.fileReader)
 
    let myHeaders = new Headers()
    myHeaders.append('Content-Type', 'application/json')
@@ -64,12 +63,12 @@ class ImageUploader extends React.Component {
 
    return (
      <div className="previewComponent">
-       <form onSubmit={(e)=>this._handleSubmit(e)}>
+
          <input className="fileInput"
            type="file"
            onChange={(e)=>this._handleImageChange(e)} />
 
-       </form>
+
        <div className="imgPreview">
          {$imagePreview}
        </div>

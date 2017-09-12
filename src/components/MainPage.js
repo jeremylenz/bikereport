@@ -11,7 +11,6 @@ class MainPage extends React.Component {
   }
 
   render () {
-    console.log('MainPage: locationId = ', this.props.match.params.location_id)
     return (
       <div className="put-it-in-a-div main-page">
         <NavBar />
