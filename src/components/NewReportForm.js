@@ -336,7 +336,7 @@ render () {
     locationName = "None"
   }
 
-  if(this.state.selectedBikePathId && (this.state.bikePathsLoaded == true)) {
+  if(this.state.selectedBikePathId && (this.state.bikePathsLoaded === true)) {
     bikePathName = this.state.bikePaths.find((bikepath) => {return bikepath.id === this.state.selectedBikePathId}).name
   } else {
     bikePathName = "Loading.."
