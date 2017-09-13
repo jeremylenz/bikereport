@@ -1,8 +1,8 @@
 import React from 'react'
-import config from '../config'
+// import config from '../config'
 import { Image } from 'semantic-ui-react'
 
-const OUR_API_URL = config.OUR_API_URL
+// const OUR_API_URL = config.OUR_API_URL
 
 class ImageUploader extends React.Component {
   constructor(props) {

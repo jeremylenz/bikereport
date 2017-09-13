@@ -103,6 +103,10 @@ div.ui.right.labeled.button {  /* say thanks button */
   margin-top: 0px;
 }
 
+.ui.horizontal.segments>.segment  {
+  min-width: 50%;
+}
+
 .login-box {
   margin-top: 12px;
 }

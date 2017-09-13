@@ -78,7 +78,7 @@ class Report extends React.Component {
             <Feed.Extra text><i>On bike path: </i>{this.props.bikePath}</Feed.Extra>
             }
             <Feed.Extra text><i>Location: </i>{this.props.location.name}</Feed.Extra>
-
+            <p />
             <Feed.Extra text>{thisReport.details}</Feed.Extra>
             {typeof this.props.image !== 'undefined' &&
             <Feed.Extra images className='report-pic'>

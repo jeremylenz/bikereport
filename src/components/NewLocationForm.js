@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Icon, Input, Segment, Modal, Header, Dropdown, Search } from 'semantic-ui-react'
+import { Form, Button, Icon, Input, Segment, Modal, Header, Search } from 'semantic-ui-react'
 import MapContainer from './MapContainer.js'
 import NavBar from './NavBar'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
@@ -237,7 +237,6 @@ class NewLocationForm extends React.Component {
     })
     console.log(this.state.currentMarker)
     let newLocationName = this.state.locationNameInput
-    let bikePathName = this.state.bikePathInput
     let bikePathId = this.state.selectedBikePathId
 
     let myHeaders = new Headers();
@@ -324,19 +323,20 @@ class NewLocationForm extends React.Component {
 
 
 
-            <Segment.Group horizontal>
+            <Segment.Group horizontal compact>
               <Segment>
 
               <Form onSubmit={this.onSubmit}>
                 <Form.Field>
-                  <Input action='Go' placeholder={'Enter address (optional)..'} value={this.state.text} onChange={this.handleChange} />
-
+                  <Input fluid placeholder={'Enter address (optional)..'} value={this.state.text} onChange={this.handleChange} />
                 </Form.Field>
+                  <Button type='submit'>Go</Button>
               </Form>
             </Segment>
 
               <Segment>
-                <Button floated='left' basic icon='cancel' color='red' onClick={this.goBack}/>
+
+              <Button floated='right' basic icon='cancel' color='red' onClick={this.goBack}/>
 
               {this.state.loadingCurrentLocation && (
               <Button loading size='huge' floated='right' />
