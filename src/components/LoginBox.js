@@ -88,7 +88,7 @@ class LoginBox extends React.Component {
 
     let myBody =
     {"oauth": {
-                  "oauth_callback": "http://localhost:3000/api/v1/twitter",
+                  "oauth_callback": `${OUR_API_URL}/twitter`,
                   "http_method": "post",
                   "url": "https://api.twitter.com/oauth/request_token"
                   }
