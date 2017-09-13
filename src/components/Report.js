@@ -66,18 +66,18 @@ class Report extends React.Component {
 
     return (
       <div className='put-it-in-a-div report'>
-        <Divider />
+        <Divider style={{clear: 'right'}}/>
         <Feed.Event>
           <Feed.Content>
             <Feed.Summary>
               <Feed.Extra images id='report-mini-map'><a target="_blank" href={googleMapLinkUrl}><img src={googleMapImgUrl} height='100' width='100' alt='google map'/></a></Feed.Extra>
-              <Feed.Date style={{color: 'gray'}}>{timeString}</Feed.Date>
+              <Feed.Date style={{color: 'gray'}} size='small'>{timeString}</Feed.Date>
               <Feed.User>{this.props.username}</Feed.User> reported <strong>{thisReport.report_type}</strong>
             </Feed.Summary>
             {this.props.bikePath !== "None" &&
-            <Feed.Extra text>On bike path: {this.props.bikePath}</Feed.Extra>
+            <Feed.Extra text><i>On bike path: </i>{this.props.bikePath}</Feed.Extra>
             }
-            <Feed.Extra text>Location: {this.props.location.name}</Feed.Extra>
+            <Feed.Extra text><i>Location: </i>{this.props.location.name}</Feed.Extra>
 
             <Feed.Extra text>{thisReport.details}</Feed.Extra>
             {typeof this.props.image !== 'undefined' &&

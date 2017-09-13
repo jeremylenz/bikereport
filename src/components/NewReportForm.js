@@ -11,19 +11,19 @@ class NewReportForm extends React.Component {
     super (props)
 
     let reportTypes = [
-      'Safety issue - General',
-      'Police vehicle in bike lane',
-      'Truck/commercial vehicle in bike lane',
-      'Other motor vehicle in a bike lane',
-      'Police activity',
+      'Safety Issue - General',
+      'Police Vehicle in Bike Lane',
+      'Truck/Commercial Vehicle in Bike Lane',
+      'Other Motor Vehicle in Bike Lane',
+      'Police Activity',
       'Metal Plates',
-      'Street defect - Pothole/Pavement issue',
+      'Street Defect - Pothole/Pavement issue',
       'Construction',
-      'Obstruction in a bike lane',
-      'Police blockade',
-      'Standing water on bike path',
+      'Obstruction in a Bike Lane',
+      'Police Blockade',
+      'Standing Water on Bike Path',
       'Eyes on the Street / Improvement',
-      'Just saying hi'
+      'Just Saying Hi'
     ]
 
     let typeOptions = reportTypes.map((rt, idx) => {
@@ -37,7 +37,7 @@ class NewReportForm extends React.Component {
     let locationId;
     let locationChosen;
     let formStatus;
-    let selectedReportType
+    let selectedReportType;
 
     if(props.locationId) {
       locationId = props.locationId
@@ -49,10 +49,14 @@ class NewReportForm extends React.Component {
       formStatus = 'hidden'
     }
 
+    let selectedReportTypeId;
     if(props.reportType) {
-      selectedReportType = props.reportType
+
+      selectedReportTypeId = parseInt(props.reportType)
+      selectedReportType = typeOptions.find((type) => {return type.key === selectedReportTypeId}).value
     } else {
-      selectedReportType = 0
+      selectedReportType = 'Safety Issue - General'
+      selectedReportTypeId = 0
     }
 
     this.state = {
@@ -68,11 +72,13 @@ class NewReportForm extends React.Component {
       typeOptions: typeOptions,
       selectedBikePathId: 1,
       selectedReportType: selectedReportType,
+      selectedReportTypeId: selectedReportTypeId,
       saveStatus: 'waiting',
       formStatus: formStatus,
       imageAjax: null,
       error: false,
-      errorReason: ''
+      errorReason: '',
+      validationsPassed: false
 
     }
   }
@@ -80,6 +86,8 @@ class NewReportForm extends React.Component {
 
 
   componentDidMount() {
+
+    this.validateFormFields()
 
     let promise1 = fetch(`${config.OUR_API_URL}/bike_paths`)
     .then(resp => resp.json());
@@ -151,7 +159,7 @@ class NewReportForm extends React.Component {
 
 
   handleSubmit = (event) => {
-    let reportType = event.target.parentElement.parentElement.parentElement.children[4].innerText
+    let reportType = this.state.selectedReportType
     let details = this.state.details
     let bikePathId = this.state.selectedBikePathId
     let locationId = this.state.locationId
@@ -167,6 +175,14 @@ class NewReportForm extends React.Component {
     this.setState({
       imageAjax: {header: header, body: body}
     })
+  }
+
+  validateFormFields = () => {
+    if(this.state.locationChosen) {
+      this.setState({
+        validationsPassed: true
+      })
+    }
   }
 
   saveReport = (reportType, details, bikePathId, locationId, username) => {
@@ -266,18 +282,20 @@ class NewReportForm extends React.Component {
 
   resetForm = () => {
     // Allow the user, for 1000 milliseconds, to bask in the joy of having successfully saved
-    window.history.pushState({}, "Bikeways", "/main")
     setTimeout(this.cancelForm, 1000)
   }
 
   cancelForm = () => {
+    window.history.pushState({}, "Bikeways", "/main")
+    window.scrollTo(0,0);
     this.setState({
       formStatus: 'hidden',
       saveStatus: 'waiting',
       details: '',
       locationId: null,
       selectedBikePathId: 0,
-      locationChosen: false
+      locationChosen: false,
+      validationsPassed: false
     })
   }
 
@@ -287,13 +305,11 @@ class NewReportForm extends React.Component {
     })
   }
 
-  handleReportTypeDDChange = (e) => {
-    setTimeout(() => {
-      let reportTypeText = document.querySelector('#report-type-dropdown div.selected.item').innerText
-      let reportIdx = this.state.typeOptions.findIndex((rt) => {return rt.text === reportTypeText})
+  handleReportTypeDDChange = (e, data) => {
       this.setState({
-      selectedReportType: reportIdx
-    })}, 50)
+      selectedReportType: data.value,
+      selectedReportTypeId: this.state.typeOptions.find((type) => {return type.value === data.value}).key
+    })
 
 
   }
@@ -338,7 +354,6 @@ render () {
     bikePathName = "Loading.."
   }
 
-  let reportTypeText = this.state.typeOptions[this.state.selectedReportType].value
 
   return (
 
@@ -357,15 +372,14 @@ render () {
             <Header as='h2'>New Report</Header>
             <Header as='h3'>What are you reporting?</Header>
 
-            <label htmlFor='type'>Report type:</label>
-            <Form.Dropdown placeholder='Report type:' id='report-type-dropdown' options={this.state.typeOptions} value={reportTypeText} onChange={this.handleReportTypeDDChange} />
+            <Form.Dropdown placeholder='Report type:' pointing id='report-type-dropdown' options={this.state.typeOptions} value={this.state.selectedReportType} onChange={this.handleReportTypeDDChange} />
 
             <Header as='h3'>Where did you see it?</Header>
 
             {this.state.locationChosen &&
             <div className='put-it-in-a-div'>
                 <a target="_blank" id='report-mini-map' href={googleMapLinkUrl}><img src={googleMapImgUrl} height='100' width='100' alt='google map'/></a>
-                <a href={`/newlocation/${this.state.selectedReportType}`} style={{float: 'right', clear: 'right'}}>Change Location</a>
+                <a href={`/newlocation/${this.state.selectedReportTypeId}`} style={{float: 'right', clear: 'right'}}>Change Location</a>
                 <Header as='h4'>Location: </Header>
                 <p>{locationName}</p>
               <Header as='h4'>Bike Path: </Header>
@@ -374,7 +388,7 @@ render () {
             }
 
             {this.state.locationChosen === false &&
-              <Button as='a' href={`/newlocation/${this.state.selectedReportType}`} basic size='big' color='green'>
+              <Button as='a' href={`/newlocation/${this.state.selectedReportTypeId}`} basic size='big' color='green'>
                 <Icon name='crosshairs' size='big' />Choose Location
               </Button>
             }
@@ -388,7 +402,7 @@ render () {
 
               {this.state.saveStatus === 'waiting' &&
               <Button.Group>
-              <Button type='submit' basic color='green' onClick={this.handleSubmit}>Submit</Button>
+              <Button type='submit' basic color='green' onClick={this.handleSubmit} disabled={!this.state.validationsPassed}>Submit</Button>
               <Button onClick={this.cancelForm} basic color='red'>Cancel</Button>
               </Button.Group>
 

@@ -35,16 +35,22 @@ class NavBar extends React.Component {
 
         <div className='header-menu-container'>
           <Menu size='large' color='blue' inverted compact>
-            <Dropdown item text={"Hello, " + this.state.name}>
+            <Dropdown item icon='list layout'>
               <Dropdown.Menu>
                 {this.state.name === 'Guest' &&
                 <Dropdown.Item as='a' href='/'>Log In</Dropdown.Item>
                 }
                 {this.state.name !== 'Guest' &&
-                <Dropdown.Item as='a' href='/'>Log Out</Dropdown.Item>
+
+                <Dropdown.Item as='a' href='/'>
+                  <Header as='h4'>{this.state.name}</Header>
+                  <p>Log Out</p>
+                </Dropdown.Item>
                 }
               </Dropdown.Menu>
             </Dropdown>
+
+
           </Menu>
         </div>
 

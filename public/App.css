@@ -78,6 +78,13 @@
 
 }
 
+div.ui.right.labeled.button {  /* say thanks button */
+  margin-top: 12px;
+}
+
+
+
+
 @media only screen and (max-width: 768px) {
   div.reports-container-column.dont.override.my.css {
     width: 90%;

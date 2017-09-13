@@ -30,12 +30,14 @@ class NewLocationForm extends React.Component {
       saveStatus: 'waiting',
       locationId: null,
       goBack: false,
-      redirectToNewReportForm: false
+      redirectToNewReportForm: false,
+      validationsPassed: false
     }
   }
 
 
   componentDidMount () {
+    this.validateFormFields()
     fetch(`${config.OUR_API_URL}/bike_paths`)
     .then(resp => resp.json())
     .then((resp) => this.loadBikePaths(resp))
@@ -46,6 +48,18 @@ class NewLocationForm extends React.Component {
       return `${number} ${string}`
     } else {
       return `${number} ${string}s`
+    }
+  }
+
+  validateFormFields = () => {
+    if((this.state.locationNameInput !== '' && this.state.bikePathInput !== '')) {
+      this.setState({
+        validationsPassed: true
+      })
+    } else {
+      this.setState({
+        validationsPassed: false
+      })
     }
   }
 
@@ -79,7 +93,7 @@ class NewLocationForm extends React.Component {
   handleChange = (event) => {
     this.setState({
       text: event.target.value
-    })
+    }, this.validateFormFields)
   }
 
   handleBikePathDDChange = (event) => {
@@ -89,7 +103,7 @@ class NewLocationForm extends React.Component {
     this.setState({
       bikePathInput: searchQuery,
       bikePathSearchResults: bikePaths.filter((bp) => {return bp.title.toLowerCase().includes(lcSearchQuery)})
-    })
+    }, this.validateFormFields)
   }
 
   handleBikePathResultSelect = (event, data) => {
@@ -150,12 +164,19 @@ class NewLocationForm extends React.Component {
     })
   }
 
+  clearForm = () => {
+    this.setState({
+      bikePathInput: '',
+      locationNameInput: ''
+    },this.validateFormFields)
+  }
+
 
 
   handleFormChange = (event) => {
     this.setState({
       locationNameInput: event.target.value
-    })
+    }, this.validateFormFields)
   }
 
   handleFormChangeBikePath = (event) => {
@@ -195,9 +216,13 @@ class NewLocationForm extends React.Component {
     })
   }
 
-  handleOpen = () => this.setState({ modalOpen: true})
+  handleOpen = () => this.setState({ modalOpen: true}, this.validateFormFields)
 
-  handleClose = () => this.setState({ modalOpen: false, saveStatus: 'waiting' })
+  handleClose = () => this.setState({
+    modalOpen: false,
+    saveStatus: 'waiting',
+    locationNameInput: '',
+    bikePathInput: 'None'}, this.validateFormFields)
 
   prepareSave = () => {
     this.findOrCreate(this.state.bikePathInput)
@@ -345,18 +370,17 @@ class NewLocationForm extends React.Component {
                   </Form.Field>
                   <Form.Field>
 
-                  <Search
-                    icon='bicycle'
-                    value={this.state.bikePathInput}
-                    results={this.state.bikePathSearchResults}
-                    onSearchChange={this.handleBikePathDDChange}
-                    onResultSelect={this.handleBikePathResultSelect}
-                    showNoResults={false}
-                  >
-                  </Search>
-                </Form.Field>
+                    <Search
+                      value={this.state.bikePathInput}
+                      results={this.state.bikePathSearchResults}
+                      onSearchChange={this.handleBikePathDDChange}
+                      onResultSelect={this.handleBikePathResultSelect}
+                      showNoResults={false}
+                    >
+                    </Search>
+                  </Form.Field>
                   {this.state.saveStatus === 'waiting' &&
-                  <Button type='submit' onClick={this.prepareSave}>Save</Button>
+                  <Button type='submit' primary disabled={!this.state.validationsPassed} onClick={this.prepareSave}>Save</Button>
                   }
                   {this.state.saveStatus === 'saving' &&
                   <Button type='submit' loading primary>Saving...</Button>
@@ -365,6 +389,7 @@ class NewLocationForm extends React.Component {
                   <Button type='submit' color='green' disabled>
                     <Icon name='checkmark'/>Saved!</Button>
                   }
+                  <Button secondary onClick={this.clearForm}>Clear</Button>
 
                 </Form>
               </Modal.Content>
