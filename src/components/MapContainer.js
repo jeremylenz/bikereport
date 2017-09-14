@@ -1,4 +1,3 @@
-import config from '../config'
 import React from 'react'
 // import Map from './Map.js'
 // import GoogleApiComponent from './maps/GoogleApiComponent'

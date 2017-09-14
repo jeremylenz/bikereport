@@ -1,5 +1,4 @@
 import React from 'react'
-import config from '../config.js'
 import { Redirect } from 'react-router-dom'
 import { Dimmer, Loader, Message, Button } from 'semantic-ui-react'
 
@@ -20,7 +19,7 @@ import { Dimmer, Loader, Message, Button } from 'semantic-ui-react'
 // 11. We save the JWT token to local storage
 // 12. User is now logged in and can create new reports/locations
 
-const OUR_API_URL = config.OUR_API_URL
+const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
 
 class TwitterCallback extends React.Component {
 

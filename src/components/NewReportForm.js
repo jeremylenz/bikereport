@@ -1,9 +1,8 @@
 import React from 'react'
-import config from '../config.js'
 import { Form, Grid, Header, TextArea, Divider, Button, Icon, Message } from 'semantic-ui-react'
 import ImageUploader from './ImageUploader'
 
-const OUR_API_URL = config.OUR_API_URL
+const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
 
 class NewReportForm extends React.Component {
 

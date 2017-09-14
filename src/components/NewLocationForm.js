@@ -3,11 +3,10 @@ import { Form, Button, Icon, Input, Segment, Modal, Header, Search } from 'seman
 import MapContainer from './MapContainer.js'
 import NavBar from './NavBar'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
-import config from '../config.js'
 // import Mapbox from './Mapbox'
 import { Redirect } from 'react-router-dom'
 
-const OUR_API_URL = config.OUR_API_URL
+const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
 
 class NewLocationForm extends React.Component {
 

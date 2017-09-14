@@ -1,11 +1,10 @@
 import React from 'react'
-import config from '../config'
 import Report from './Report'
 import NewReportForm from './NewReportForm'
 import { Feed, Button, Message } from 'semantic-ui-react'
 
 
-const OUR_API_URL = config.OUR_API_URL
+const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
 
 class ReportsContainer extends React.Component {
 

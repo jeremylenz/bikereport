@@ -1,12 +1,11 @@
 import React from 'react'
-import config from '../config.js'
 import { Redirect } from 'react-router-dom'
 import { Dimmer, Loader, Button, Message } from 'semantic-ui-react'
 
 
-const OUR_API_URL = config.OUR_API_URL
-const FACEBOOK_APP_ID = config.FACEBOOK_APP_ID
-const OUR_OWN_URL = config.OUR_OWN_URL
+const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
+const FACEBOOK_APP_ID = process.env.REACT_APP_FACEBOOK_APP_ID
+const OUR_OWN_URL = process.env.REACT_APP_OUR_OWN_URL
 
 class FacebookCallback extends React.Component {
 

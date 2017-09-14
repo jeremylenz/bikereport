@@ -1,9 +1,8 @@
 import React from 'react'
 import { Divider, Feed, Button, Image } from 'semantic-ui-react'
-import config from '../config.js'
 import moment from 'moment'
 
-const OUR_API_URL = config.OUR_API_URL
+const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
 
 class Report extends React.Component {
 
