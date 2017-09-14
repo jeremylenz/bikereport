@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mars/heroku-js-runtime-env": "^3.0.0",
     "google-maps-react": "^1.1.0",
     "mapbox-gl": "^0.39.1",
     "moment": "^2.18.1",

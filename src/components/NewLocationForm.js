@@ -5,8 +5,11 @@ import NavBar from './NavBar'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 // import Mapbox from './Mapbox'
 import { Redirect } from 'react-router-dom'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
-const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
+const env = runtimeEnv();
+const OUR_API_URL = env.REACT_APP_OUR_API_URL
+const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY
 
 class NewLocationForm extends React.Component {
 
@@ -37,7 +40,7 @@ class NewLocationForm extends React.Component {
 
   componentDidMount () {
     this.validateFormFields()
-    fetch(`${config.OUR_API_URL}/bike_paths`)
+    fetch(`${OUR_API_URL}/bike_paths`)
     .then(resp => resp.json())
     .then((resp) => this.loadBikePaths(resp))
   }
@@ -83,7 +86,7 @@ class NewLocationForm extends React.Component {
     let geoQuery = this.state.text
     this.setState({text: ''})
     geoQuery = encodeURI(geoQuery)
-    const GEO_CODE_URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${geoQuery}&key=${config.GOOGLE_MAPS_API_KEY}`
+    const GEO_CODE_URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${geoQuery}&key=${GOOGLE_MAPS_API_KEY}`
     this.findAddress(GEO_CODE_URL)
   }
 

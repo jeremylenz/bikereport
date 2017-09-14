@@ -2,9 +2,10 @@ import React from 'react'
 import Report from './Report'
 import NewReportForm from './NewReportForm'
 import { Feed, Button, Message } from 'semantic-ui-react'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
-
-const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
+const env = runtimeEnv();
+const OUR_API_URL = env.REACT_APP_OUR_API_URL
 
 class ReportsContainer extends React.Component {
 

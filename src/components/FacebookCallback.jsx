@@ -1,11 +1,12 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { Dimmer, Loader, Button, Message } from 'semantic-ui-react'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
-
-const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
-const FACEBOOK_APP_ID = process.env.REACT_APP_FACEBOOK_APP_ID
-const OUR_OWN_URL = process.env.REACT_APP_OUR_OWN_URL
+const env = runtimeEnv();
+const OUR_API_URL = env.REACT_APP_OUR_API_URL
+const FACEBOOK_APP_ID = env.REACT_APP_FACEBOOK_APP_ID
+const OUR_OWN_URL = env.REACT_APP_OUR_OWN_URL
 
 class FacebookCallback extends React.Component {
 

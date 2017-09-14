@@ -1,7 +1,9 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { Dimmer, Loader, Message, Button } from 'semantic-ui-react'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
+const env = runtimeEnv();
 // 1. User clicks login with Twitter
 // - Assemble Oauth headers
 // 2. Send POST request to oauth / request_token specifying oauth_callback that Twitter will redirect to
@@ -19,7 +21,7 @@ import { Dimmer, Loader, Message, Button } from 'semantic-ui-react'
 // 11. We save the JWT token to local storage
 // 12. User is now logged in and can create new reports/locations
 
-const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
+const OUR_API_URL = env.REACT_APP_OUR_API_URL
 
 class TwitterCallback extends React.Component {
 

@@ -2,7 +2,10 @@ import React from 'react'
 // import Map from './Map.js'
 // import GoogleApiComponent from './maps/GoogleApiComponent'
 import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
+const env = runtimeEnv();
+const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY
 
 
 class MapContainer extends React.Component {
@@ -103,5 +106,5 @@ class MapContainer extends React.Component {
 
 
 export default GoogleApiWrapper({
-  apiKey: config.GOOGLE_MAPS_API_KEY,
+  apiKey: GOOGLE_MAPS_API_KEY,
 })(MapContainer)

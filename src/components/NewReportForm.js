@@ -1,8 +1,11 @@
 import React from 'react'
 import { Form, Grid, Header, TextArea, Divider, Button, Icon, Message } from 'semantic-ui-react'
 import ImageUploader from './ImageUploader'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
-const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
+const env = runtimeEnv();
+const OUR_API_URL = env.REACT_APP_OUR_API_URL
+const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY
 
 class NewReportForm extends React.Component {
 
@@ -88,9 +91,9 @@ class NewReportForm extends React.Component {
 
     this.validateFormFields()
 
-    let promise1 = fetch(`${config.OUR_API_URL}/bike_paths`)
+    let promise1 = fetch(`${OUR_API_URL}/bike_paths`)
     .then(resp => resp.json());
-    let promise2 = fetch(`${config.OUR_API_URL}/locations`)
+    let promise2 = fetch(`${OUR_API_URL}/locations`)
     .then((resp) => resp.json());
 
     let fetches = [promise1, promise2]
@@ -331,7 +334,7 @@ render () {
     let location = this.state.locations.find((loc) => {return loc.id == this.state.locationId})
     let locLat = location.lat
     let locLong = location.long
-    googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${locLat},${locLong}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${config.GOOGLE_MAPS_API_KEY}`
+    googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${locLat},${locLong}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${GOOGLE_MAPS_API_KEY}`
     googleMapLinkUrl = `https://www.google.com/maps/?q=loc:${locLat},${locLong}&z=18`
   } else {
     googleMapImgUrl = ""

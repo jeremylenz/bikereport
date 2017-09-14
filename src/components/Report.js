@@ -1,8 +1,11 @@
 import React from 'react'
 import { Divider, Feed, Button, Image } from 'semantic-ui-react'
 import moment from 'moment'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
-const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
+const env = runtimeEnv();
+const OUR_API_URL = env.REACT_APP_OUR_API_URL
+const GOOGLE_MAPS_API_KEY = env.REACT_APP_GOOGLE_MAPS_API_KEY
 
 class Report extends React.Component {
 
@@ -54,7 +57,7 @@ class Report extends React.Component {
   render () {
 
     let thisReport = this.props.reportData
-    let googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.props.location.lat},${this.props.location.long}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${config.GOOGLE_MAPS_API_KEY}`
+    let googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.props.location.lat},${this.props.location.long}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${GOOGLE_MAPS_API_KEY}`
     let googleMapLinkUrl = `https://www.google.com/maps/?q=loc:${this.props.location.lat},${this.props.location.long}&z=18`
     let relTimeString = moment(thisReport.updated_at).fromNow()
     let absTimeString = moment(thisReport.updated_at).format('LLLL')

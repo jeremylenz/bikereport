@@ -2,10 +2,12 @@ import React from 'react'
 import { Button, Grid, Header, Divider, Icon, Message } from 'semantic-ui-react'
 // import TwitterCallback from './TwitterCallback'
 import { Redirect } from 'react-router-dom'
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 
-const OUR_API_URL = process.env.REACT_APP_OUR_API_URL
-const FACEBOOK_APP_ID = process.env.REACT_APP_FACEBOOK_APP_ID
-const OUR_OWN_URL = process.env.REACT_APP_OUR_OWN_URL
+const env = runtimeEnv();
+const OUR_API_URL = env.REACT_APP_OUR_API_URL
+const FACEBOOK_APP_ID = env.REACT_APP_FACEBOOK_APP_ID
+const OUR_OWN_URL = env.REACT_APP_OUR_OWN_URL
 
 class LoginBox extends React.Component {
 
@@ -103,7 +105,6 @@ class LoginBox extends React.Component {
   }
 
   loadTwitterRequestToken = (resp) => {
-    console.log(resp)
     let oauth_token = resp.oauth_token
     // let oauth_token_secret = resp.oauth_token_secret
 
