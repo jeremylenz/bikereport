@@ -66,6 +66,7 @@ class FacebookCallback extends React.Component {
 
 
   setFacebookJwt (resp) {
+    console.log(resp)
     localStorage.setItem('jwt', resp.jwt)
     localStorage.setItem('guest', false)
     localStorage.setItem('name', resp.username)
