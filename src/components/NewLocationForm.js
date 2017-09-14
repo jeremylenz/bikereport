@@ -9,7 +9,7 @@ import runtimeEnv from '@mars/heroku-js-runtime-env';
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
-const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY
+const GOOGLE_MAPS_API_KEY = env.REACT_APP_GOOGLE_MAPS_API_KEY
 
 class NewLocationForm extends React.Component {
 

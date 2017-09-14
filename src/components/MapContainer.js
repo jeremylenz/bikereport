@@ -5,7 +5,7 @@ import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 
 const env = runtimeEnv();
-const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY
+const GOOGLE_MAPS_API_KEY = env.REACT_APP_GOOGLE_MAPS_API_KEY
 
 
 class MapContainer extends React.Component {
