@@ -99,6 +99,10 @@ div.ui.right.labeled.button {  /* say thanks button */
   width: 100%;
 }
 
+.ui.inverted.blue.menu {
+  margin-left: 12px;
+}
+
 .ui.horizontal.segments {
   margin-top: 0px;
 }
