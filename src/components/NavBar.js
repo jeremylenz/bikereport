@@ -29,7 +29,7 @@ class NavBar extends React.Component {
 
           <Header as='h1' className='nav-header' style={{color: 'white'}}>
             <Icon name='bicycle' />
-            BikeWays
+            BikeWaze
           </Header>
         </div>
 
