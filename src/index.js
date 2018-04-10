@@ -9,6 +9,12 @@ import LoginPage from './components/LoginPage'
 import TwitterCallback from './components/TwitterCallback'
 import FacebookCallback from './components/FacebookCallback'
 
+import { createStore } from 'redux'
+
+const store = createStore(
+   reducer, /* preloadedState, */
++  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+ );
 
 const App = () => {
   return (
