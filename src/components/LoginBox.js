@@ -3,6 +3,9 @@ import { Button, Grid, Header, Divider, Icon, Message } from 'semantic-ui-react'
 // import TwitterCallback from './TwitterCallback'
 import { Redirect } from 'react-router-dom'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { recordGuestLogin } from '../actions/actions.js'
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
@@ -77,6 +80,7 @@ class LoginBox extends React.Component {
   setGuestJWT (resp) {
     localStorage.setItem('jwt', resp.jwt)
     localStorage.setItem('guest', true)
+    this.props.recordGuestLogin()
     console.log('set JWT!')
   }
 
@@ -192,4 +196,16 @@ class LoginBox extends React.Component {
   }
 }
 
-export default LoginBox;
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    recordGuestLogin: recordGuestLogin,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginBox);

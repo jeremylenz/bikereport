@@ -161,7 +161,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   /* code change */
   return bindActionCreators({
-    recordLogin: recordLogin
+    recordLogin: recordLogin,
   }, dispatch);
 };
 

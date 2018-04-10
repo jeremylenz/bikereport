@@ -1,5 +1,8 @@
 import React from 'react'
 import { Header, Icon, Menu, Dropdown } from 'semantic-ui-react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { recordGuestLogin } from '../actions/actions.js'
 
 class NavBar extends React.Component {
 
@@ -42,7 +45,7 @@ class NavBar extends React.Component {
                 }
                 {this.state.name !== 'Guest' &&
 
-                <Dropdown.Item as='a' href='/'>
+                <Dropdown.Item as='a' href='/' onClick={this.props.recordGuestLogin}>
                   <Header as='h4'>{this.state.name}</Header>
                   <p>Log Out</p>
                 </Dropdown.Item>
@@ -62,4 +65,16 @@ class NavBar extends React.Component {
   }
 }
 
-export default NavBar;
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    recordGuestLogin: recordGuestLogin,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);
