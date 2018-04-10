@@ -59,7 +59,7 @@ class LoginBox extends React.Component {
 
     let myBody =
     {"user":
-            {"email":"jerbear@jerbear.com"}
+            {"email":"guest@example.com"}
     }
 
     return fetch(`${OUR_API_URL}/login`,
