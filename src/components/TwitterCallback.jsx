@@ -2,6 +2,10 @@ import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { Dimmer, Loader, Message, Button } from 'semantic-ui-react'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { recordLogin } from '../actions/actions.js'
+
 
 const env = runtimeEnv();
 // 1. User clicks login with Twitter
@@ -112,6 +116,10 @@ class TwitterCallback extends React.Component {
     localStorage.setItem('jwt', resp.jwt)
     localStorage.setItem('guest', false)
     localStorage.setItem('name', screenName)
+    this.props.recordLogin({
+      guest: false,
+      name: screenName
+    })
     console.log('set JWT!')
     this.setState({
       done: true
@@ -144,4 +152,17 @@ class TwitterCallback extends React.Component {
   }
 }
 
-export default TwitterCallback;
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  /* code change */
+  return bindActionCreators({
+    recordLogin: recordLogin
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TwitterCallback);
