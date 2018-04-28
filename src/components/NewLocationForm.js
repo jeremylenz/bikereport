@@ -4,6 +4,9 @@ import MapContainer from './MapContainer.js'
 import NavBar from './NavBar'
 // import {Map, Marker, GoogleApiWrapper} from 'google-maps-react'
 // import Mapbox from './Mapbox'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { setLocation } from '../actions/actions.js'
 import { Redirect } from 'react-router-dom'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 
@@ -421,4 +424,17 @@ class NewLocationForm extends React.Component {
 
 }
 
-export default NewLocationForm
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    reports: state.reports,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    setLocation: setLocation,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewLocationForm)

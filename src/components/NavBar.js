@@ -2,7 +2,7 @@ import React from 'react'
 import { Header, Icon, Menu, Dropdown } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { recordGuestLogin } from '../actions/actions.js'
+import { recordGuestLogin, recordLogin } from '../actions/actions.js'
 
 class NavBar extends React.Component {
 
@@ -20,6 +20,12 @@ class NavBar extends React.Component {
       this.setState({
         name: name
       })
+      this.props.recordLogin({
+        guest: false,
+        name: name,
+      })
+    } else {
+      this.props.recordGuestLogin()
     }
   }
 
@@ -74,6 +80,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     recordGuestLogin: recordGuestLogin,
+    recordLogin: recordLogin,
   }, dispatch);
 };
 

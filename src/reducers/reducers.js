@@ -23,9 +23,10 @@ function currentUser(state = {}, action) {
 function reports(state = {}, action) {
   switch (action.type) {
     case 'INCREMENT_LIKES':
+      console.log(action.reportId)
       return {
         ...state,
-          reports: []
+          reportId: action.reportId,
       }
     case 'ADD_REPORT':
       return {
@@ -37,8 +38,22 @@ function reports(state = {}, action) {
   }
 }
 
+function newReportData(state = {}, action) {
+  switch (action.type) {
+    case 'SET_LOCATION':
+      return {
+        ...state,
+          newReportData: {
+            locationId: action.locationId
+          }
+      }
+    default:
+      return state
+  }
+}
+
 const bwReducers = combineReducers({
-  currentUser, reports,
+  currentUser, reports, newReportData
 })
 
 export default bwReducers

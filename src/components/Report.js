@@ -30,7 +30,7 @@ class Report extends React.Component {
         hasLiked: true,
         likes: this.props.reportData.likes + 1
       },this.postLike)
-      this.props.incrementLikes(this.props.id)
+      this.props.incrementLikes(this.props.reportData.id)
     }
   }
 

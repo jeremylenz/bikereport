@@ -3,6 +3,11 @@ import { Redirect } from 'react-router-dom'
 import { Dimmer, Loader, Button, Message } from 'semantic-ui-react'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { recordLogin } from '../actions/actions.js'
+
+
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
 const FACEBOOK_APP_ID = env.REACT_APP_FACEBOOK_APP_ID
@@ -74,6 +79,10 @@ class FacebookCallback extends React.Component {
     this.setState({
       done: true
     })
+    this.props.recordLogin({
+      guest: false,
+      name: resp.username
+    })
   }
 
 
@@ -101,4 +110,17 @@ class FacebookCallback extends React.Component {
   }
 }
 
-export default FacebookCallback;
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  /* code change */
+  return bindActionCreators({
+    recordLogin: recordLogin,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookCallback);

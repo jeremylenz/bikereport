@@ -24,3 +24,10 @@ export function addReport(report) {
     report: report,
   }
 }
+
+export function setLocation(locationId) {
+  return {
+    type: 'SET_LOCATION',
+    locationId: locationId,
+  }
+}
