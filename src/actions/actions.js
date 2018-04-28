@@ -19,7 +19,8 @@ export function incrementLikes(reportId) {
 }
 
 export function addReport(report) {
-  return
-    { type: 'ADD_REPORT',
-      report: report }
+  return {
+    type: 'ADD_REPORT',
+    report: report,
+  }
 }
