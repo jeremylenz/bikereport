@@ -3,6 +3,9 @@ import Report from './Report'
 import NewReportForm from './NewReportForm'
 import { Feed, Button, Message } from 'semantic-ui-react'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { addReport } from '../actions/actions.js'
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
@@ -144,5 +147,17 @@ class ReportsContainer extends React.Component {
 
 }
 
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    reports: state.reports,
+  };
+};
 
-export default ReportsContainer
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    addReport: addReport,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportsContainer)

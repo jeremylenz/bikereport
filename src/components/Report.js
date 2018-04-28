@@ -2,6 +2,9 @@ import React from 'react'
 import { Divider, Feed, Button, Image } from 'semantic-ui-react'
 import moment from 'moment'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { incrementLikes } from '../actions/actions.js'
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
@@ -27,6 +30,7 @@ class Report extends React.Component {
         hasLiked: true,
         likes: this.props.reportData.likes + 1
       },this.postLike)
+      this.props.incrementLikes(this.props.id)
     }
   }
 
@@ -118,5 +122,17 @@ class Report extends React.Component {
 
 }
 
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    reports: state.reports,
+  };
+};
 
-export default Report
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    incrementLikes: incrementLikes,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Report)

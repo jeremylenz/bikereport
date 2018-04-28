@@ -10,3 +10,16 @@ export function recordGuestLogin() {
           guest: true,
           name: 'Guest'}
 }
+
+export function incrementLikes(reportId) {
+  return {
+    type: 'INCREMENT_LIKES',
+    reportId: reportId,
+  }
+}
+
+export function addReport(report) {
+  return
+    { type: 'ADD_REPORT',
+      report: report }
+}
