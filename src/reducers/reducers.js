@@ -20,29 +20,14 @@ function currentUser(state = {}, action) {
   }
 }
 
-function reports(state = {}, action) {
+function reports(state = [], action) {
   switch (action.type) {
-    case 'INCREMENT_LIKES':
-      console.log(action.reportId)
-      return {
-        ...state,
-          reportId: action.reportId,
-      }
     case 'ADD_REPORT':
-      return {
-        ...state,
-          reports: [action.report, ...state.reports]
-      }
+      return [action.report, ...state]
     case 'ADD_REPORT_SET':
-      return {
-        ...state,
-          reports: [...state.reports, ...action.reportSet]
-      }
+      return [...state, ...action.reportSet]
     case 'CLEAR_REPORTS':
-      return {
-        ...state,
-          reports: [],
-      }
+      return []
     default:
       return state
   }

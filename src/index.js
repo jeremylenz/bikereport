@@ -9,14 +9,18 @@ import LoginPage from './components/LoginPage'
 import TwitterCallback from './components/TwitterCallback'
 import FacebookCallback from './components/FacebookCallback'
 
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import createSagaMiddleware from 'redux-saga'
 import { Provider } from 'react-redux'
 import bwReducers from './reducers/reducers.js'
+import rootSaga from './sagas/rootSaga'
 
+const sagaMiddleware = createSagaMiddleware()
 const store = createStore(
    bwReducers, /* preloadedState, */
-   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(sagaMiddleware)
  );
+sagaMiddleware.run(rootSaga);
 
 const App = () => {
   return (

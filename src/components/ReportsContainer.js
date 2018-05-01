@@ -5,17 +5,17 @@ import { Feed, Button, Message } from 'semantic-ui-react'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { addReport } from '../actions/actions.js'
+import { addReport, loadReports } from '../actions/actions.js'
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
 
 class ReportsContainer extends React.Component {
 
-  constructor () {
-    super ()
+  constructor (props) {
+    super (props)
     this.state = {
-      reports: [],
+      reports: props.reports,
       reportsLoaded: false,
       allReportsLoaded: true,
       bikePaths: [],
@@ -40,7 +40,7 @@ class ReportsContainer extends React.Component {
 
     Promise.all(myPromises)
     .then((resp) => this.setState({
-      reports: resp[0],
+      // reports: resp[0],
       bikePaths: resp[1],
       users: resp[2],
       locations: resp[3],
@@ -48,7 +48,14 @@ class ReportsContainer extends React.Component {
       reportsLoaded: true
     }))
     .catch(this.handleError)
+    this.props.loadReports()
 
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      reports: nextProps.reports,
+    })
   }
 
   handleError = (reason) => {
@@ -147,6 +154,20 @@ class ReportsContainer extends React.Component {
 
 }
 
+ReportsContainer.defaultProps = {
+  reports: [],
+  reportsLoaded: false,
+  allReportsLoaded: true,
+  bikePaths: [],
+  users: [],
+  locations: [],
+  images: [],
+  loggedIn: false,
+  admin: false,
+  error: false,
+  errorReason: ''
+}
+
 const mapStateToProps = (state) => {
   return {
     currentUser: state.currentUser,
@@ -157,6 +178,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     addReport: addReport,
+    loadReports: loadReports,
   }, dispatch);
 };
 

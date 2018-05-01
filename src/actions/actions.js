@@ -38,6 +38,12 @@ export function clearReports() {
   }
 }
 
+export function loadReports() {
+  return {
+    type: 'LOAD_REPORTS',
+  }
+}
+
 export function setLocation(locationId) {
   return {
     type: 'SET_LOCATION',
