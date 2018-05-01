@@ -25,6 +25,19 @@ export function addReport(report) {
   }
 }
 
+export function addReportSet(reportSet) {
+  return {
+    type: 'ADD_REPORT_SET',
+    reportSet: reportSet
+  }
+}
+
+export function clearReports() {
+  return {
+    type: 'CLEAR_REPORTS',
+  }
+}
+
 export function setLocation(locationId) {
   return {
     type: 'SET_LOCATION',

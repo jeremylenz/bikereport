@@ -33,6 +33,16 @@ function reports(state = {}, action) {
         ...state,
           reports: [action.report, ...state.reports]
       }
+    case 'ADD_REPORT_SET':
+      return {
+        ...state,
+          reports: [...state.reports, ...action.reportSet]
+      }
+    case 'CLEAR_REPORTS':
+      return {
+        ...state,
+          reports: [],
+      }
     default:
       return state
   }
