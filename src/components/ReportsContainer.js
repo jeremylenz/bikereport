@@ -125,24 +125,26 @@ class ReportsContainer extends React.Component {
           <NewReportForm loadNewReport={this.loadNewReport} locationId={this.props.locationId} reportType={this.props.reportType} />
           }
 
-          <Feed size='large'>
-            {this.state.reports.map((report) => {
-              let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id }).name
-              let username = this.state.users.find((user) => {return user.id === report.user_id}).username
-              let location = this.state.locations.find((loc) => {return loc.id === report.location_id})
-              let image = this.state.images.find((img) => {return img.report_id === report.id})
-              return <Report
-                reportData={report}
-                key={report.id}
-                bikePath={bikePath}
-                username={username}
-                location={location}
-                image={image}
-                admin={this.state.admin}
-                deleteReport={this.deleteReport}
-                />
-            })}
-        </Feed>
+          {this.state.reportsLoaded &&
+            <Feed size='large'>
+              {this.state.reports.map((report) => {
+                let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id }).name
+                let username = this.state.users.find((user) => {return user.id === report.user_id}).username
+                let location = this.state.locations.find((loc) => {return loc.id === report.location_id})
+                let image = this.state.images.find((img) => {return img.report_id === report.id})
+                return <Report
+                  reportData={report}
+                  key={report.id}
+                  bikePath={bikePath}
+                  username={username}
+                  location={location}
+                  image={image}
+                  admin={this.state.admin}
+                  deleteReport={this.deleteReport}
+                  />
+              })}
+          </Feed>
+        }
         {this.state.allReportsLoaded === false &&
         <Button fluid size='big' primary>Load More</Button>
 

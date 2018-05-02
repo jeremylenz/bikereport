@@ -3,7 +3,6 @@ import { loadReports, watchLoadReports } from './allsagas'
 
 export default function* rootSaga() {
   yield all([
-    loadReports(),
     watchLoadReports(),
   ])
 }
