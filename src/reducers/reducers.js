@@ -42,6 +42,50 @@ function reports(state = [], action) {
   }
 }
 
+function bikePaths(state = [], action) {
+  switch(action.type) {
+    case 'ADD_BIKE_PATH_SET':
+      return [...state, ...action.bikePathSet]
+    case 'CLEAR_BIKE_PATHS':
+      return []
+    default:
+      return state
+  }
+}
+
+function users(state = [], action) {
+  switch(action.type) {
+    case 'ADD_USER_SET':
+      return [...state, ...action.userSet]
+    case 'CLEAR_USERS':
+      return []
+    default:
+      return state
+  }
+}
+
+function locations(state = [], action) {
+  switch(action.type) {
+    case 'ADD_LOCATION_SET':
+      return [...state, ...action.locationSet]
+    case 'CLEAR_LOCATIONS':
+      return []
+    default:
+      return state
+  }
+}
+
+function images(state = [], action) {
+  switch(action.type) {
+    case 'ADD_IMAGE_SET':
+      return [...state, ...action.imageSet]
+    case 'CLEAR_IMAGES':
+      return []
+    default:
+      return state
+  }
+}
+
 function newReportData(state = {}, action) {
   switch (action.type) {
     case 'SET_LOCATION':
@@ -57,7 +101,7 @@ function newReportData(state = {}, action) {
 }
 
 const bwReducers = combineReducers({
-  currentUser, reports, newReportData
+  currentUser, reports, bikePaths, users, locations, images, newReportData
 })
 
 export default bwReducers

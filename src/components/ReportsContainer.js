@@ -5,7 +5,7 @@ import { Feed, Button, Message } from 'semantic-ui-react'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { addReport, loadReports } from '../actions/actions.js'
+import { addReport, loadReports, loadBikePaths, loadLocations, loadUsers, loadImages } from '../actions/actions.js'
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
@@ -31,30 +31,46 @@ class ReportsContainer extends React.Component {
 
   componentDidMount() {
 
-    let stuffToFetch = ['reports','bike_paths','users','locations', 'images']
+    // let stuffToFetch = ['reports','bike_paths','users','locations', 'images']
 
-    let myPromises = stuffToFetch.map((thing) => {
-      return fetch(`${OUR_API_URL}/${thing}`)
-      .then(resp => resp.json())
-    })
+    // let myPromises = stuffToFetch.map((thing) => {
+    //   return fetch(`${OUR_API_URL}/${thing}`)
+    //   .then(resp => resp.json())
+    // })
 
-    Promise.all(myPromises)
-    .then((resp) => this.setState({
-      // reports: resp[0],
-      bikePaths: resp[1],
-      users: resp[2],
-      locations: resp[3],
-      images: resp[4],
-      reportsLoaded: true
-    }))
-    .catch(this.handleError)
+    // Promise.all(myPromises)
+    // .then((resp) => this.setState({
+    //   reports: resp[0],
+    //   bikePaths: resp[1],
+    //   users: resp[2],
+    //   locations: resp[3],
+    //   images: resp[4],
+    //   reportsLoaded: true
+    // }))
+    // .catch(this.handleError)
     this.props.loadReports()
+    this.props.loadBikePaths()
+    this.props.loadUsers()
+    this.props.loadLocations()
+    this.props.loadImages()
 
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      reports: nextProps.reports,
+    this.setState(() => {
+      let newState = {}
+      let keysToUpdate = ['reports', 'bikePaths', 'users', 'locations', 'images']
+      keysToUpdate.forEach((key) => {
+        if(nextProps[key].length > 0) {
+          newState[key] = nextProps[key]
+        }
+      })
+      if(keysToUpdate.every((key) => nextProps[key].length > 0)) {
+        newState.reportsLoaded = true
+        console.log('reportsLoaded')
+      }
+      console.log('newState: ', newState)
+      return newState
     })
   }
 
@@ -156,24 +172,28 @@ class ReportsContainer extends React.Component {
 
 }
 
-ReportsContainer.defaultProps = {
-  reports: [],
-  reportsLoaded: false,
-  allReportsLoaded: true,
-  bikePaths: [],
-  users: [],
-  locations: [],
-  images: [],
-  loggedIn: false,
-  admin: false,
-  error: false,
-  errorReason: ''
-}
+// ReportsContainer.defaultProps = {
+//   reports: [],
+//   reportsLoaded: false,
+//   allReportsLoaded: true,
+//   bikePaths: [],
+//   users: [],
+//   locations: [],
+//   images: [],
+//   loggedIn: false,
+//   admin: false,
+//   error: false,
+//   errorReason: ''
+// }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (reduxState) => {
   return {
-    currentUser: state.currentUser,
-    reports: state.reports,
+    currentUser: reduxState.currentUser,
+    reports: reduxState.reports,
+    bikePaths: reduxState.bikePaths,
+    locations: reduxState.locations,
+    users: reduxState.users,
+    images: reduxState.images,
   };
 };
 
@@ -181,6 +201,10 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     addReport: addReport,
     loadReports: loadReports,
+    loadBikePaths: loadBikePaths,
+    loadLocations: loadLocations,
+    loadUsers: loadUsers,
+    loadImages: loadImages,
   }, dispatch);
 };
 

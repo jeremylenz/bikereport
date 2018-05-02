@@ -32,15 +32,91 @@ export function addReportSet(reportSet) {
   }
 }
 
+export function addBikePathSet(bikePathSet) {
+  return {
+    type: 'ADD_BIKE_PATH_SET',
+    bikePathSet: bikePathSet
+  }
+}
+
+export function addLocationSet(locationSet) {
+  return {
+    type: 'ADD_LOCATION_SET',
+    locationSet: locationSet
+  }
+}
+
+export function addUserSet(userSet) {
+  return {
+    type: 'ADD_USER_SET',
+    userSet: userSet
+  }
+}
+
+export function addImageSet(imageSet) {
+  return {
+    type: 'ADD_IMAGE_SET',
+    imageSet: imageSet
+  }
+}
+
 export function clearReports() {
   return {
     type: 'CLEAR_REPORTS',
   }
 }
 
+export function clearBikePaths() {
+  return {
+    type: 'CLEAR_BIKE_PATHS',
+  }
+}
+
+export function clearLocations() {
+  return {
+    type: 'CLEAR_LOCATIONS',
+  }
+}
+
+export function clearUsers() {
+  return {
+    type: 'CLEAR_USERS',
+  }
+}
+
+export function clearImages() {
+  return {
+    type: 'CLEAR_IMAGES',
+  }
+}
+
 export function loadReports() {
   return {
     type: 'LOAD_REPORTS',
+  }
+}
+
+export function loadBikePaths() {
+  return {
+    type: 'LOAD_BIKE_PATHS',
+  }
+}
+
+export function loadLocations() {
+  return {
+    type: 'LOAD_LOCATIONS',
+  }
+}
+
+export function loadUsers() {
+  return {
+    type: 'LOAD_USERS',
+  }
+}
+
+export function loadImages() {
+  return {
+    type: 'LOAD_IMAGES',
   }
 }
 
