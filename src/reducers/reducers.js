@@ -28,6 +28,15 @@ function reports(state = [], action) {
       return [...state, ...action.reportSet]
     case 'CLEAR_REPORTS':
       return []
+    case 'INCREMENT_LIKES':
+      let idx = state.findIndex((report) => report.id === action.reportId)
+      if(idx === -1) {
+        return state
+      } else {
+        let existingState = Object.assign([], state)
+        existingState[idx].likes += 1
+        return existingState
+      }
     default:
       return state
   }
