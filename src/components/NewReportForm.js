@@ -2,6 +2,10 @@ import React from 'react'
 import { Form, Grid, Header, TextArea, Divider, Button, Icon, Message } from 'semantic-ui-react'
 import ImageUploader from './ImageUploader'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
+import { addReport, loadBikePaths, loadLocations } from '../actions/actions.js'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
@@ -41,8 +45,19 @@ class NewReportForm extends React.Component {
     let formStatus;
     let selectedReportType;
 
-    if(props.locationId) {
-      locationId = props.locationId
+    // if(props.locationId) {
+    //   locationId = props.locationId
+    //   locationChosen = true
+    //   formStatus = 'showing'
+    // } else {
+    //   locationId = null
+    //   locationChosen = false
+    //   formStatus = 'hidden'
+    // }
+
+    if(props.newReportData && props.newReportData.locationId) {
+      locationId = props.newReportData.locationId
+      console.log(locationId)
       locationChosen = true
       formStatus = 'showing'
     } else {
@@ -439,4 +454,22 @@ render () {
 
 }
 
-export default NewReportForm
+const mapStateToProps = (reduxState) => {
+  return {
+    currentUser: reduxState.currentUser,
+    // reports: reduxState.reports,
+    bikePaths: reduxState.bikePaths,
+    locations: reduxState.locations,
+    newReportData: reduxState.newReportData,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    addReport: addReport,
+    loadBikePaths: loadBikePaths,
+    loadLocations: loadLocations,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewReportForm)

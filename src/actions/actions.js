@@ -18,12 +18,47 @@ export function incrementLikes(reportId) {
   }
 }
 
+export function saveReport(reportData) {
+  return {
+    type: 'SAVE_REPORT',
+    reportData: reportData,
+  }
+}
+
+export function saveLocation(locationData) {
+  return {
+    type: 'SAVE_LOCATION',
+    locationData: locationData,
+  }
+}
+
 export function addReport(report) {
   return {
     type: 'ADD_REPORT',
     report: report,
   }
 }
+
+export function redirectToNewReportForm() {
+  return {
+    type: 'REDIRECT_TO_NEW_REPORT_FORM',
+  }
+}
+
+export function addLocation(location) {
+  return {
+    type: 'ADD_LOCATION',
+    location: location,
+  }
+}
+
+export function addBikePath(bikePath) {
+  return {
+    type: 'ADD_BIKE_PATH',
+    bikePath: bikePath,
+  }
+}
+
 
 export function addReportSet(reportSet) {
   return {
@@ -124,5 +159,18 @@ export function setLocation(locationId) {
   return {
     type: 'SET_LOCATION',
     locationId: locationId,
+  }
+}
+
+export function setBikePath(bikePathId) {
+  return {
+    type: 'SET_BIKE_PATH',
+    bikePathId: bikePathId,
+  }
+}
+
+export function clearNewReportData() {
+  return {
+    type: 'CLEAR_NEW_REPORT_DATA',
   }
 }

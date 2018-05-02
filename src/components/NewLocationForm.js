@@ -6,7 +6,7 @@ import NavBar from './NavBar'
 // import Mapbox from './Mapbox'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { setLocation } from '../actions/actions.js'
+import { setLocation, saveLocation } from '../actions/actions.js'
 import { Redirect } from 'react-router-dom'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 
@@ -46,6 +46,19 @@ class NewLocationForm extends React.Component {
     fetch(`${OUR_API_URL}/bike_paths`)
     .then(resp => resp.json())
     .then((resp) => this.loadBikePaths(resp))
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if(nextProps.redirectToNewReportForm) {
+      this.setState({
+        redirectToNewReportForm: true,
+      })
+    }
+    if(nextProps.locationId) {
+      this.setState({
+        locationId: nextProps.locationId,
+      })
+    }
   }
 
   pluralize(number, string) {
@@ -261,16 +274,18 @@ class NewLocationForm extends React.Component {
                   }
     }
 
-    fetch(`${OUR_API_URL}/locations`,
-      {method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify(myBody)
-    })
-    .then(resp => resp.json())
-    .then(resp => this.setState({
-      saveStatus: 'saved',
-      locationId: resp.id,
-    }, this.proceedToNewReport))
+    this.props.saveLocation(myBody)
+
+    // fetch(`${OUR_API_URL}/locations`,
+    //   {method: 'POST',
+    //   headers: myHeaders,
+    //   body: JSON.stringify(myBody)
+    // })
+    // .then(resp => resp.json())
+    // .then(resp => this.setState({
+    //   saveStatus: 'saved',
+    //   locationId: resp.id,
+    // }, this.proceedToNewReport))
   }
 
   updateMarker = (mapCenter) => {
@@ -428,12 +443,15 @@ const mapStateToProps = (state) => {
   return {
     currentUser: state.currentUser,
     reports: state.reports,
+    redirectToNewReportForm: state.newReportData.redirectToNewReportForm,
+    locationId: state.newReportData.locationId,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     setLocation: setLocation,
+    saveLocation: saveLocation,
   }, dispatch);
 };
 

@@ -46,6 +46,8 @@ function bikePaths(state = [], action) {
   switch(action.type) {
     case 'ADD_BIKE_PATH_SET':
       return [...state, ...action.bikePathSet]
+    case 'ADD_BIKE_PATH':
+      return [action.bikePath, ...state]
     case 'CLEAR_BIKE_PATHS':
       return []
     default:
@@ -70,6 +72,8 @@ function locations(state = [], action) {
       return [...state, ...action.locationSet]
     case 'CLEAR_LOCATIONS':
       return []
+    case 'ADD_LOCATION':
+      return [action.location, ...state]
     default:
       return state
   }
@@ -88,12 +92,22 @@ function images(state = [], action) {
 
 function newReportData(state = {}, action) {
   switch (action.type) {
+    case 'CLEAR_NEW_REPORT_DATA':
+      return {}
     case 'SET_LOCATION':
       return {
         ...state,
-          newReportData: {
-            locationId: action.locationId
-          }
+          locationId: action.locationId
+      }
+    case 'SET_BIKE_PATH':
+      return {
+        ...state,
+          bikePathId: action.bikePathId
+      }
+    case 'REDIRECT_TO_NEW_REPORT_FORM':
+      return {
+        ...state,
+          redirectToNewReportForm: true,
       }
     default:
       return state

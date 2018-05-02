@@ -69,7 +69,7 @@ class ReportsContainer extends React.Component {
         newState.reportsLoaded = true
         console.log('reportsLoaded')
       }
-      console.log('newState: ', newState)
+      // console.log('newState: ', newState)
       return newState
     })
   }
