@@ -39,6 +39,13 @@ export function addReport(report) {
   }
 }
 
+export function addImage(image) {
+  return {
+    type: 'ADD_IMAGE',
+    image: image,
+  }
+}
+
 export function redirectToNewReportForm() {
   return {
     type: 'REDIRECT_TO_NEW_REPORT_FORM',

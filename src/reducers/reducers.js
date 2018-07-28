@@ -85,6 +85,8 @@ function images(state = [], action) {
       return [...state, ...action.imageSet]
     case 'CLEAR_IMAGES':
       return []
+    case 'ADD_IMAGE':
+      return [...state, action.image]
     default:
       return state
   }

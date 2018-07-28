@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Grid, Header, TextArea, Divider, Button, Icon, Message } from 'semantic-ui-react'
 import ImageUploader from './ImageUploader'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
-import { addReport, loadBikePaths, loadLocations } from '../actions/actions.js'
+import { addReport, loadBikePaths, loadLocations, saveReport } from '../actions/actions.js'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -233,20 +233,26 @@ class NewReportForm extends React.Component {
       myBody["file_data"] = this.state.imageAjax.body.file_data
     }
 
+    this.props.saveReport(myBody)
+    this.setState({
+      saveStatus: 'saved',
+      imageAjax: null
+    }, this.resetForm)
 
-    fetch(`${OUR_API_URL}/reports`,
-      {method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify(myBody)
-    })
-    .then(resp => resp.json())
-    .then((resp) => {
-      this.props.loadNewReport(resp.report, resp.image)
-      this.setState({
-        saveStatus: 'saved',
-        imageAjax: null
-      }, this.resetForm)
-    })
+
+    // fetch(`${OUR_API_URL}/reports`,
+    //   {method: 'POST',
+    //   headers: myHeaders,
+    //   body: JSON.stringify(myBody)
+    // })
+    // .then(resp => resp.json())
+    // .then((resp) => {
+    //   this.props.loadNewReport(resp.report, resp.image)
+      // this.setState({
+      //   saveStatus: 'saved',
+      //   imageAjax: null
+      // }, this.resetForm)
+    // })
 
     }
 
@@ -469,6 +475,7 @@ const mapDispatchToProps = (dispatch) => {
     addReport: addReport,
     loadBikePaths: loadBikePaths,
     loadLocations: loadLocations,
+    saveReport: saveReport,
   }, dispatch);
 };
 

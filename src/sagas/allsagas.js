@@ -2,7 +2,7 @@ import { call, put, takeLatest, takeEvery, all } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 import apiHeaders from '../helpers/ApiHeaders.js'
-import { addReportSet, clearReports, clearBikePaths, addBikePathSet,
+import { addReportSet, addReport, addImage, clearReports, clearBikePaths, addBikePathSet,
          clearLocations, addLocationSet, clearUsers, addUserSet,
          clearImages, addImageSet, addLocation, setLocation,
          redirectToNewReportForm, addBikePath, setBikePath } from '../actions/actions'
@@ -66,7 +66,11 @@ export function* loadImages() {
 }
 
 export function* saveReport(action) {
-  console.log(action)
+  // console.log(action)
+  let newReport = yield call(postStuffToApi, 'reports', action.reportData)
+  yield put(addReport(newReport.report))
+  yield put(addImage(newReport.image))
+  
 }
 
 export function* saveLocation(action) {
