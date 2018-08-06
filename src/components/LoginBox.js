@@ -105,13 +105,13 @@ class LoginBox extends React.Component {
   }
 
   loadTwitterRequestToken = (resp) => {
-    // debugger;
     console.log(resp)
     let oauth_token = resp.oauth_token
+    let hasError = Object.keys(resp).includes('oauth_token') ? false : true
     // let oauth_token_secret = resp.oauth_token_secret
 
     this.setState({
-      twitterButtonEnabled: true,
+      twitterButtonEnabled: !hasError,
       twitterButtonHref: `https://api.twitter.com/oauth/authenticate?oauth_token=${oauth_token}`
     })
 
