@@ -5,7 +5,8 @@ import apiHeaders from '../helpers/ApiHeaders.js'
 import { addReportSet, addReport, addImage, clearReports, clearBikePaths, addBikePathSet,
          clearLocations, addLocationSet, clearUsers, addUserSet,
          clearImages, addImageSet, addLocation, setLocation,
-         redirectToNewReportForm, addBikePath, setBikePath } from '../actions/actions'
+         redirectToNewReportForm, addBikePath, setBikePath,
+         setBikePathsLoaded, setLocationsLoaded } from '../actions/actions'
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
@@ -45,12 +46,14 @@ export function* loadBikePaths() {
   let bikePaths = yield call(getStuffFromApi, 'bike_paths')
   yield put(clearBikePaths())
   yield put(addBikePathSet(bikePaths))
+  yield put(setBikePathsLoaded())
 }
 
 export function* loadLocations() {
   let locations = yield call(getStuffFromApi, 'locations')
   yield put(clearLocations())
   yield put(addLocationSet(locations))
+  yield put(setLocationsLoaded())
 }
 
 export function* loadUsers() {
@@ -70,7 +73,7 @@ export function* saveReport(action) {
   let newReport = yield call(postStuffToApi, 'reports', action.reportData)
   yield put(addReport(newReport.report))
   yield put(addImage(newReport.image))
-  
+
 }
 
 export function* saveLocation(action) {

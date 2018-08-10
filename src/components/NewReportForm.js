@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Grid, Header, TextArea, Divider, Button, Icon, Message } from 'semantic-ui-react'
 import ImageUploader from './ImageUploader'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
-import { addReport, loadBikePaths, loadLocations, saveReport } from '../actions/actions.js'
+import { addReport, loadBikePaths, loadLocations, saveReport, clearBikePaths } from '../actions/actions.js'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -44,6 +44,7 @@ class NewReportForm extends React.Component {
     let locationChosen;
     let formStatus;
     let selectedReportType;
+    let selectedBikePathId;
 
     // if(props.locationId) {
     //   locationId = props.locationId
@@ -57,10 +58,12 @@ class NewReportForm extends React.Component {
 
     if(props.newReportData && props.newReportData.locationId) {
       locationId = props.newReportData.locationId
-      console.log(locationId)
+      console.log('location chosen: ' + locationId)
       locationChosen = true
       formStatus = 'showing'
+      selectedBikePathId =
     } else {
+      console.log('locationChosen === false')
       locationId = null
       locationChosen = false
       formStatus = 'hidden'
@@ -106,18 +109,20 @@ class NewReportForm extends React.Component {
 
     this.validateFormFields()
 
-    let promise1 = fetch(`${OUR_API_URL}/bike_paths`)
-    .then(resp => resp.json());
-    let promise2 = fetch(`${OUR_API_URL}/locations`)
-    .then((resp) => resp.json());
+    // let promise1 = fetch(`${OUR_API_URL}/bike_paths`)
+    // .then(resp => resp.json());
+    // let promise2 = fetch(`${OUR_API_URL}/locations`)
+    // .then((resp) => resp.json());
+    //
+    // let fetches = [promise1, promise2]
+    //
+    // Promise.all(fetches)
+    // .then((resp) => {this.loadBikePaths(resp[0])
+    //                 this.loadLocations(resp[1])})
+    //                 .catch(this.handleError)
 
-    let fetches = [promise1, promise2]
-
-    Promise.all(fetches)
-    .then((resp) => {this.loadBikePaths(resp[0])
-                    this.loadLocations(resp[1])})
-                    .catch(this.handleError)
-
+    this.props.loadBikePaths()
+    this.props.loadLocations()
 
   }
 
@@ -349,10 +354,13 @@ render () {
     )
   }
 
+  let locationsLoaded = this.props.locationsLoaded
+  let bikePathsLoaded = this.props.bikePathsLoaded
+
   let googleMapImgUrl;
   let googleMapLinkUrl;
-  if (this.state.locationChosen && this.state.locationsLoaded) {
-    let location = this.state.locations.find((loc) => {return loc.id == this.state.locationId})
+  if (this.state.locationChosen && locationsLoaded) {
+    let location = this.props.locations.find((loc) => {return loc.id == this.state.locationId})
     let locLat = location.lat
     let locLong = location.long
     googleMapImgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${locLat},${locLong}&zoom=16&size=100x100&scale=2&maptype=terrain&key=${GOOGLE_MAPS_API_KEY}`
@@ -365,18 +373,17 @@ render () {
   let locationName;
   let bikePathName;
 
-  if(this.state.locationId && (this.state.locationsLoaded === true)) {
-    locationName = this.state.locations.find((loc) => {return loc.id == this.state.locationId}).name
+  if(this.state.locationId && (locationsLoaded === true)) {
+    locationName = this.props.locations.find((loc) => {return loc.id == this.state.locationId}).name
   } else {
     locationName = "None"
   }
 
-  if(this.state.selectedBikePathId && (this.state.bikePathsLoaded === true)) {
-    bikePathName = this.state.bikePaths.find((bikepath) => {return bikepath.id === this.state.selectedBikePathId}).name
+  if(this.state.selectedBikePathId && (bikePathsLoaded === true)) {
+    bikePathName = this.props.bikePaths.find((bikepath) => {return bikepath.id === this.state.selectedBikePathId}).name
   } else {
     bikePathName = "Loading.."
   }
-
 
   return (
 
@@ -463,9 +470,11 @@ render () {
 const mapStateToProps = (reduxState) => {
   return {
     currentUser: reduxState.currentUser,
-    // reports: reduxState.reports,
+    reports: reduxState.reports,
     bikePaths: reduxState.bikePaths,
+    bikePathsLoaded: reduxState.bikePathsLoaded,
     locations: reduxState.locations,
+    locationsLoaded: reduxState.locationsLoaded,
     newReportData: reduxState.newReportData,
   };
 };

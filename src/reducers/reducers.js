@@ -42,6 +42,28 @@ function reports(state = [], action) {
   }
 }
 
+function bikePathsLoaded(state = false, action) {
+  switch (action.type) {
+    case 'SET_BIKE_PATHS_LOADED':
+      return true
+    case 'CLEAR_BIKE_PATHS_LOADED':
+      return false
+    default:
+      return state
+  }
+}
+
+function locationsLoaded(state = false, action) {
+  switch (action.type) {
+    case 'SET_LOCATIONS_LOADED':
+      return true
+    case 'CLEAR_LOCATIONS_LOADED':
+      return false
+    default:
+      return state
+  }
+}
+
 function bikePaths(state = [], action) {
   switch(action.type) {
     case 'ADD_BIKE_PATH_SET':
@@ -117,7 +139,15 @@ function newReportData(state = {}, action) {
 }
 
 const bwReducers = combineReducers({
-  currentUser, reports, bikePaths, users, locations, images, newReportData
-})
+  currentUser,
+  reports,
+  bikePaths,
+  bikePathsLoaded,
+  locationsLoaded,
+  users,
+  locations,
+  images,
+  newReportData,
+});
 
-export default bwReducers
+export default bwReducers;

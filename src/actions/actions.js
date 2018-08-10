@@ -102,6 +102,30 @@ export function addImageSet(imageSet) {
   }
 }
 
+export function setBikePathsLoaded() {
+  return {
+    type: 'SET_BIKE_PATHS_LOADED'
+  }
+}
+
+export function clearBikePathsLoaded() {
+  return {
+    type: 'CLEAR_BIKE_PATHS_LOADED'
+  }
+}
+
+export function setLocationsLoaded() {
+  return {
+    type: 'SET_LOCATIONS_LOADED'
+  }
+}
+
+export function clearLocationsLoaded() {
+  return {
+    type: 'CLEAR_LOCATIONS_LOADED'
+  }
+}
+
 export function clearReports() {
   return {
     type: 'CLEAR_REPORTS',
