@@ -161,7 +161,7 @@ class ReportsContainer extends React.Component {
             {this.state.reports.map((report) => {
               let bikePath = this.retrieveBikePath(report)
               let username = this.retrieveUserName(report)
-              let location = this.state.locations.find((loc) => {return loc.id === report.location_id})
+              let location = {} || this.state.locations.find((loc) => {return loc.id === report.location_id})
               let image = this.state.images.find((img) => {return img.report_id === report.id})
               return <Report
                 reportData={report}
