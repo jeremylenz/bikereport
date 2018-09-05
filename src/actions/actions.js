@@ -11,6 +11,13 @@ export function recordGuestLogin() {
           name: 'Guest'}
 }
 
+export function setTwitterTokenSecret(secret) {
+  return {
+    type: 'SET_TWITTER_TOKEN_SECRET',
+    payload: secret,
+  }
+}
+
 export function incrementLikes(reportId) {
   return {
     type: 'INCREMENT_LIKES',

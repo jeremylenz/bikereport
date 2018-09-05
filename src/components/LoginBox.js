@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom'
 import runtimeEnv from '@mars/heroku-js-runtime-env';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { recordGuestLogin } from '../actions/actions.js'
+import { recordGuestLogin, setTwitterTokenSecret } from '../actions/actions.js'
 
 const env = runtimeEnv();
 const OUR_API_URL = env.REACT_APP_OUR_API_URL
@@ -112,7 +112,8 @@ class LoginBox extends React.Component {
     console.log(resp)
     let oauth_token = resp.oauth_token
     let hasError = Object.keys(resp).includes('oauth_token') ? false : true
-    // let oauth_token_secret = resp.oauth_token_secret
+    let oauth_token_secret = resp.oauth_token_secret
+    setTwitterTokenSecret(oauth_token_secret)
 
     let href = `https://api.twitter.com/oauth/authenticate?oauth_token=${oauth_token}`
     if (hasError) {
@@ -213,6 +214,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     recordGuestLogin: recordGuestLogin,
+    setTwitterTokenSecret: setTwitterTokenSecret,
   }, dispatch);
 };
 

@@ -15,6 +15,11 @@ function currentUser(state = {}, action) {
           guest: action.guest,
           name: action.name,
       }
+    case 'SET_TWITTER_TOKEN_SECRET':
+      return {
+        ...state,
+        oAuthTokenSecret: action.payload,
+      }
     default:
       return state
   }

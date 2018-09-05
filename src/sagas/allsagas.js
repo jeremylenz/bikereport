@@ -36,8 +36,7 @@ async function postStuffToApi(endpoint, stuff) {
 export function* loadReports() {
   let reports = yield call(getStuffFromApi, 'reports')
   yield put(clearReports())
-  console.log(reports)
-  console.log(typeof reports)
+  // console.log(reports)
   yield put(addReportSet(reports))
 
 }
