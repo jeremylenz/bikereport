@@ -97,6 +97,22 @@ class ReportsContainer extends React.Component {
     .catch(this.handleError)
   }
 
+  retrieveBikePath = (report) => {
+    let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id })
+    if (bikePath) {
+      return bikePath.name
+    }
+    return ""
+  }
+
+  retrieveUserName = (report) => {
+    let user = this.state.users.find((user) => {return user.id === report.user_id})
+    if (user) {
+      return user.username
+    }
+    return ""
+  }
+
   render () {
 
     if(this.state.error) {
@@ -117,8 +133,8 @@ class ReportsContainer extends React.Component {
 
           <Feed size='large'>
             {this.state.reports.map((report) => {
-              let bikePath = this.state.bikePaths.find((bp) => {return bp.id === report.bike_path_id }).name
-              let username = this.state.users.find((user) => {return user.id === report.user_id}).username
+              let bikePath = this.retrieveBikePath(report)
+              let username = this.retrieveUserName(report)
               let location = this.state.locations.find((loc) => {return loc.id === report.location_id})
               let image = this.state.images.find((img) => {return img.report_id === report.id})
               return <Report
