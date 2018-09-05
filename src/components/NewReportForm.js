@@ -373,14 +373,14 @@ render () {
   let locationName;
   let bikePathName;
 
-  if(this.state.locationId && (locationsLoaded === true)) {
-    locationName = this.props.locations.find((loc) => {return loc.id == this.state.locationId}).name
+  if(this.state.locationId && this.state.locationsLoaded && this.state.locations.length > 0) {
+    locationName = this.state.locations.find((loc) => {return loc.id == this.state.locationId}).name
   } else {
     locationName = "None"
   }
 
-  if(this.state.selectedBikePathId && (bikePathsLoaded === true)) {
-    bikePathName = this.props.bikePaths.find((bikepath) => {return bikepath.id === this.state.selectedBikePathId}).name
+  if(this.state.selectedBikePathId && this.state.bikePathsLoaded && this.state.bikePaths.length > 0) {
+    bikePathName = this.state.bikePaths.find((bikepath) => {return bikepath.id === this.state.selectedBikePathId}).name
   } else {
     bikePathName = "Loading.."
   }
