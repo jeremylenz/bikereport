@@ -61,7 +61,7 @@ class NewReportForm extends React.Component {
       console.log('location chosen: ' + locationId)
       locationChosen = true
       formStatus = 'showing'
-      selectedBikePathId = props.locations.find((loc) => {return loc.id == this.state.locationId}).bike_path_id
+      selectedBikePathId = props.locations.find((loc) => {return loc.id == locationId}).bike_path_id
     } else {
       console.log('locationChosen === false')
       locationId = null
